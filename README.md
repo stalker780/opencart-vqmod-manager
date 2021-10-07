@@ -18,11 +18,13 @@ Demo website will be available soon.
 Extension features:
 - includes VQMod installer right from your admin panel
 - allows to manage/edit/create VQMod XML files
+- filter VQMods by filename/name/author/contents/status
 - modifies extension installer to allow "upload/vqmod/xml/*.xml" files inside extension zip
 - modified files list
 - view logs
 - modification dumps
 - cache clear
+- uses CodeMirror editor for XML syntax highlight
 
 Installation steps:
 1. Open Extensions->Installer
