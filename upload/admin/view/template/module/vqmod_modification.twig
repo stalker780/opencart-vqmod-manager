@@ -1,0 +1,35 @@
+<table class="table table-bordered table-hover">
+  <thead>
+    <tr>
+      <td class="text-start">{{ column_filename }}</td>
+      <td class="text-start">{{ column_name }}</td>
+    </tr>
+  </thead>
+  <tbody>
+    {% if modifications %}
+
+    {% for modification in modifications %}
+    <tr>
+      <td class="text-start">
+        {{ modification.path }}
+      </td>
+      <td class="text-start">
+        {% for vqmod in modification.vqmods %}
+        {% if not vqmod.status %}<span class="text-danger">{{ text_disabled }}</span> {% endif %}<a href="{{ vqmod.edit }}">{{ vqmod.name }} {% if vqmod.version %}- {{ vqmod.version }}{% endif %}</a>
+        {% if (vqmod.author) %}by <b>{{ vqmod.author }}</b>{% endif %}
+        <br>
+        {% endfor %}
+      </td>
+    </tr>
+    {% endfor %}
+
+    {% else %}
+    <tr>
+      <td class="text-start">
+      </td>
+      <td class="text-start">
+      </td>
+    </tr>
+    {% endif %}
+  </tbody>
+</table>

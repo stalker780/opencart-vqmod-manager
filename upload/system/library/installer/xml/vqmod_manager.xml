@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<modification>
+	<id>VQMod Manager OC 4.0</id>
+	<version>1.1.0</version>
+	<vqmver required="true">2.6.6</vqmver>
+	<author>Cl!cker</author>
+	<link>https://opencart.click</link>
+	<info>VQMod Manager extension</info>
+
+<!-- add VQMod Manager to admin left menu  -->
+	<file name="admin/controller/common/column_left.php">
+		<operation>
+			<search position="before" trim="true"><![CDATA[
+				if ($this->user->hasPermission('access', 'marketplace/startup')) {
+			]]></search>
+			<add trim="true"><![CDATA[
+				if ($this->user->hasPermission('access', 'extension/clicker_vqmod_manager/module/vqmod')) {
+					$this->load->language('extension/clicker_vqmod_manager/module/vqmod', 'vqmod');
+					$marketplace[] = [
+						'name'	   => $this->language->get('vqmod_text_vqmod_manager'),
+						'href'     => $this->url->link('extension/clicker_vqmod_manager/module/vqmod', 'user_token=' . $this->session->data['user_token']),
+						'children' => []
+					];
+				}
+			]]></add>
+		</operation>
+	</file>
+
+	<file name="admin/controller/marketplace/installer.php">
+
+<!-- allow VQMod XML files 'upload/vqmod/xml/sample.xml' inside ocmod.zip -->
+		<operation>
+			<search position="before" trim="true"><![CDATA[
+				if (substr($destination, 0, 6) == 'admin/')
+			]]></search>
+			<add trim="true"><![CDATA[
+				if (substr($destination, 0, 10) == 'vqmod/xml/') {
+					$path = $destination;
+					$base = DIR_OPENCART;
+				}
+			]]></add>
+		</operation>
+
+		<operation>
+			<search position="before" trim="true"><![CDATA[
+				if (substr($result['path'], 0, strlen($extension_install_info['code']))
+			]]></search>
+			<add trim="true"><![CDATA[
+				if (substr($result['path'], 0, 10) == 'vqmod/xml/') {
+					$path = DIR_OPENCART . $result['path'];
+				}
+			]]></add>
+		</operation>
+
+
+<!-- Try to take extension code from XML, not from zip filename -->
+		<operation>
+			<search position="before" trim="true"><![CDATA[
+				$name = $dom->getElementsByTagName('name')->item(0);
+			]]></search>
+			<add trim="true"><![CDATA[
+				$code = $dom->getElementsByTagName('code')->item(0);
+
+				if ($code) {
+					$code = $code->nodeValue;
+				} else {
+					$code = basename($filename, '.ocmod.zip');
+				}
+			]]></add>
+		</operation>
+
+		<operation>
+			<search position="replace" trim="true"><![CDATA[
+				=> basename($filename, '.ocmod.zip'),
+			]]></search>
+			<add trim="true"><![CDATA[
+				=> $code,
+			]]></add>
+		</operation>
+	</file>
+
+</modification>

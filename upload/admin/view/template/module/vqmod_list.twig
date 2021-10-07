@@ -1,0 +1,656 @@
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="float-end">
+        <a href="{{ clear_cache }}" data-bs-toggle="tooltip" title="{{ button_clear_cache }}" class="btn btn-info"><i class="fas fa-eraser"></i></a>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        {# <a href="{{ clear }}" data-bs-toggle="tooltip" title="{{ button_clear }}" class="btn btn-warning"><i class="fas fa-eraser"></i></a> #}
+        <button type="button" id="button-upload" data-bs-toggle="tooltip" title="{{ button_upload }} XML" data-loading-text="{{ text_loading }}" class="btn btn-warning"><i class="fas fa-upload"></i></button>
+        <a href="{{ add }}" data-bs-toggle="tooltip" title="{{ button_add }}" class="btn btn-primary"><i class="fas fa-plus"></i></a>
+        <button type="button" data-bs-toggle="tooltip" title="{{ button_delete }}" class="btn btn-danger" onclick="confirm('{{ text_confirm }}') ? $('#form-vqmod').submit() : false;"><i class="fas fa-trash-alt"></i></button>
+      </div>
+      <h1>{{ heading_title }}</h1>
+      <ol class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+          <li class="breadcrumb-item"><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+      </ol>
+    </div>
+  </div>
+  <div class="container-fluid">
+    {% if error_warning %}
+      {#<div class="alert alert-danger alert-dismissible"><i class="fas fa-exclamation-circle"></i> {{ error_warning }}
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+      </div>#}
+	<div class="alert alert-danger alert-dismissible"><i class="fas fa-exclamation-circle"></i> {{ error_warning }}
+		<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+	</div>
+    {% endif %}
+    {% if success %}
+      {#<div class="alert alert-success alert-dismissible"><i class="fas fa-check-circle"></i> {{ success }}
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+      </div>#}
+	<div class="alert alert-success alert-dismissible"><i class="fas fa-check-circle"></i> {{ success }}
+		<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+	</div>
+    {% endif %}
+    {# <div class="alert alert-info"><i class="fas fa-info-circle"></i> {{ text_refresh }}</div> #}
+    <div class="card">
+      <div class="card-header"><i class="fas fa-list"></i> {{ text_list }}</div>
+      <div class="card-body">
+        <ul class="nav nav-tabs">
+          <li class="nav-item"><a href="#tab-general" data-bs-toggle="tab" class="nav-link{% if vqmod_version %} active{% endif %}">{{ tab_general }}</a></li>
+          <li class="nav-item"><a href="#tab-modification" data-bs-toggle="tab" class="nav-link">{{ tab_modification }}</a></li>
+          <li class="nav-item"><a href="#tab-log" data-bs-toggle="tab" class="nav-link">{{ tab_log }}</a></li>
+          <li class="nav-item"><a href="#tab-maintenance" data-bs-toggle="tab" class="nav-link{% if not vqmod_version %} active{% endif %}">{{ tab_maintenance }}</a></li>
+          <li class="nav-item"><a href="#tab-about" data-bs-toggle="tab" class="nav-link">{{ tab_about }}</a></li>
+        </ul>
+        <div class="tab-content">
+
+          <div id="tab-general" class="tab-pane fade {% if vqmod_version %} show active{% endif %}">
+
+            <div class="row">
+              <div id="filter-vqmod" class="col-12">
+                <div class="card border-0">
+                  <div class="card-header" style="cursor:pointer;" onclick="$(this).parent().find('.card-body').slideToggle();">
+                    <h5 class="card-title alert-info1 p-0 m-0"><i class="fas fa-filter"></i> {{ text_filter }} <i class="float-end fas fa-angle-down"></i></h5>
+                  </div>
+                  <div class="card-body py-0"
+                    {% if filter_name != '' or filter_author != '' or filter_xml != '' or filter_status != '' %}
+                    {% else %}
+                      style="display:none;"
+                    {% endif %}
+                    >
+                    <div class="row mb-3">
+                      <div class="col-sm-3">
+                        <div class="form-group">
+                          <label class="col-form-label" for="input-name">{{ entry_name }}</label>
+                          <input type="text" name="filter_name" value="{{ filter_name }}" placeholder="{{ entry_name }}" id="input-name" class="form-control"/>
+                        </div>
+                      </div>
+                      <div class="col-sm-3">
+                        <div class="form-group">
+                          <label class="col-form-label" for="input-author">{{ entry_author }}</label>
+                          <input type="text" name="filter_author" value="{{ filter_author }}" placeholder="{{ entry_author }}" id="input-author" class="form-control"/>
+                        </div>
+                      </div>
+                      <div class="col-sm-3">
+                        <div class="form-group">
+                          <label class="col-form-label" for="input-xml">{{ entry_xml }}</label>
+                          <input type="text" name="filter_xml" value="{{ filter_xml }}" placeholder="{{ entry_xml }}" id="input-xml" class="form-control"/>
+                        </div>
+                      </div>
+                      <div class="col-sm-3">
+                        <div class="form-group">
+                          <label class="col-form-label" for="input-status">{{ entry_status }}</label>
+                          <select name="filter_status" id="input-status" class="form-select" onchange="filterVQMods();">
+                            <option value=""></option>
+                            {% if filter_status == '1' %}
+                            <option value="1" selected="selected">{{ text_enabled }}</option>
+                            {% else %}
+                            <option value="1">{{ text_enabled }}</option>
+                            {% endif %}
+                            {% if filter_status == '0' %}
+                            <option value="0" selected="selected">{{ text_disabled }}</option>
+                            {% else %}
+                            <option value="0">{{ text_disabled }}</option>
+                            {% endif %}
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="mb-3 text-end">
+                      <button type="button" id="button-filter-clear" class="btn btn-light" onclick="filterVQMods('clear');"><i class="fas fa-times-circle"></i> {{ button_clear }}</button>
+                      <button type="button" id="button-filter" class="btn btn-primary" onclick="filterVQMods();"><i class="fas fa-filter"></i> {{ button_filter }}</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <form action="{{ delete }}" method="post" enctype="multipart/form-data" id="form-vqmod">
+              <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                  <thead>
+                    <tr>
+                      <td style="width: 1px;" class="text-center"><input type="checkbox" onclick="$('input[name*=\'selected\']').trigger('click');"/></td>
+                      <td class="text-start"><div class="row">
+                          <div class="col">
+                          {% if sort == 'filename' %}
+                            <a href="{{ sort_filename }}" class="{{ order|lower }}">{{ column_filename }}</a>
+                          {% else %}
+                            <a href="{{ sort_filename }}">{{ column_filename }}</a>
+                          {% endif %}
+                          </div>
+                          <div class="col">
+                          {% if sort == 'name' %}
+                            <a href="{{ sort_name }}" class="{{ order|lower }}">{{ column_name }}</a>
+                          {% else %}
+                            <a href="{{ sort_name }}">{{ column_name }}</a>
+                          {% endif %}
+                          </div>
+                        </div></td>
+                      <td class="text-start">{% if sort == 'author' %}
+                          <a href="{{ sort_author }}" class="{{ order|lower }}">{{ column_author }}</a>
+                        {% else %}
+                          <a href="{{ sort_author }}">{{ column_author }}</a>
+                        {% endif %}</td>
+                      <td class="text-start">{% if sort == 'version' %}
+                          <a href="{{ sort_version }}" class="{{ order|lower }}">{{ column_version }}</a>
+                        {% else %}
+                          <a href="{{ sort_version }}">{{ column_version }}</a>
+                        {% endif %}</td>
+                      <td class="text-start">{% if sort == 'status' %}
+                          <a href="{{ sort_status }}" class="{{ order|lower }}">{{ column_status }}</a>
+                        {% else %}
+                          <a href="{{ sort_status }}">{{ column_status }}</a>
+                        {% endif %}</td>
+                      <td class="text-start">{% if sort == 'date_added' %}
+                          <a href="{{ sort_date_added }}" class="{{ order|lower }}">{{ column_date_added }}</a>
+                        {% else %}
+                          <a href="{{ sort_date_added }}">{{ column_date_added }}</a>
+                        {% endif %}</td>
+                      <td class="text-start">{% if sort == 'date_modified' %}
+                          <a href="{{ sort_date_modified }}" class="{{ order|lower }}">{{ column_date_modified }}</a>
+                        {% else %}
+                          <a href="{{ sort_date_modified }}">{{ column_date_modified }}</a>
+                        {% endif %}</td>
+                      <td class="text-end">{{ column_action }}</td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% if vqmods %}
+                      {% for vqmod in vqmods %}
+                        <tr>
+                          <td class="text-center">{% if vqmod.vqmod_id in selected %}
+                              <input type="checkbox" name="selected[]" value="{{ vqmod.vqmod_id }}" checked="checked"/>
+                            {% else %}
+                              <input type="checkbox" name="selected[]" value="{{ vqmod.vqmod_id }}"/>
+                            {% endif %}</td>
+                          <td class="text-start">
+                            {% if vqmod.info %}
+                              <span class="vq-info text-info" data-bs-toggle="tooltip" title="{{ vqmod.info }}"><i class="fas fa-info-circle"></i></span>
+                            {% endif %}
+                            {{ vqmod.name }}
+                            {% if vqmod.xml_error %}
+                              (<a href="javascript:void(0)" onclick="$(this).closest('td').find('.xml-error').toggleClass('d-none')"><span class="text-danger">{{ text_xml_error }}</span></a>)
+                              <div class="xml-error d-none text-danger" style="max-height:200px; overflow:auto;">
+                                <pre class="error">{{ vqmod.xml_error }}</pre>
+                              </div>
+                            {% endif %}
+                            <br><small class="form-text text-muted">{{ vqmod.basename }} ({{ vqmod.filesize }})</small>
+                          </td>
+                          <td class="text-start">
+                            {% if vqmod.link %}
+                              <a href="{{ vqmod.link }}" data-bs-toggle="tooltip" title="{{ button_link }}" class="" target="_blank">{{ vqmod.author }}</a>
+                            {% else %}
+                              {{ vqmod.author }}
+                            {% endif %}
+                          </td>
+                          <td class="text-start">{{ vqmod.version }}</td>
+                          <td class="text-start">{{ vqmod.status }}</td>
+                          <td class="text-start">{{ vqmod.date_added }}</td>
+                          <td class="text-start">{{ vqmod.date_modified }}</td>
+                          <td class="text-end">
+                            {# <button type="button" data-link="{{ vqmod.upload }}" class="btn btn-warning button-upload" data-bs-toggle="tooltip" title="{{ button_upload }}" onclick="execute_upload(this);"><i class="fas fa-upload" onclick="execute_upload(but);"></i></button> #}
+                            <a href="{{ vqmod.download }}" data-bs-toggle="tooltip" title="{{ button_download }}" class="btn btn-warning"><i class="fas fa-download"></i></a>
+                            &nbsp;&nbsp;
+
+                            <a href="{{ vqmod.edit }}" data-bs-toggle="tooltip" title="{{ button_edit }}" class="btn btn-primary"><i class="fas fa-pencil-alt"></i></a>
+
+                            {% if not vqmod.enabled %}
+                              <a href="{{ vqmod.enable }}" data-bs-toggle="tooltip" title="{{ button_enable }}" class="btn btn-success"><i class="fas fa-plus-circle"></i></a>
+                            {% else %}
+                              <a href="{{ vqmod.disable }}" data-bs-toggle="tooltip" title="{{ button_disable }}" class="btn btn-danger"><i class="fas fa-minus-circle"></i></a>
+                            {% endif %}</td>
+                        </tr>
+                      {% endfor %}
+                    {% else %}
+                      <tr>
+                        <td class="text-center" colspan="8">{{ text_no_results }}</td>
+                      </tr>
+                    {% endif %}
+                  </tbody>
+                </table>
+              </div>
+            </form>
+            <div class="row">
+              <div class="col-sm-6 text-start">{{ pagination }}</div>
+              <div class="col-sm-6 text-end">{{ results }}</div>
+            </div>
+          </div>
+
+          <div id="tab-modification" class="tab-pane fade">
+            <div class="table-responsive">
+              <table class="table table-bordered table-hover">
+                <thead>
+                  <tr>
+                    <td class="text-start">{{ column_filename }}</td>
+                    <td class="text-start">{{ column_name }}</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="text-start"></td>
+                    <td class="text-start"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="text-center">
+              <a class="btn btn-info" href="javascript:void(0)" onclick="get_modifications();"><i class="fas fa-sync"></i> {{ button_refresh }}</a>
+            </div>
+          </div>
+
+          <div id="tab-maintenance" class="tab-pane fade{% if not vqmod_version %} show active{% endif %}">
+            {% if not vqmod_path and vqmod_vendor %}
+            <div class="row mb-3">
+              <div class="col-sm-12">
+                <a class="btn btn-danger w-100" href="javascript:void(0)" onclick="vendor();"><i class="fas fa-box-open"></i>&nbsp;&nbsp;&nbsp;1. {{ text_extract }} VQMod ({{ vqmod_vendor_file }})</a>
+              </div>
+            </div>
+            {% endif %}
+
+            {% if not vqmod_version and vqmod_installer %}
+            <div class="row mb-3">
+              <div class="col-sm-12">
+                {# <a class="btn btn-danger w-100" href="{{ vqmod_installer }}" target="_blank" onclick="setTimeout(function() {location=location}, 500);"><i class="fas fa-play"></i>&nbsp;&nbsp;&nbsp;2. {{ text_run_installer }}</a> #}
+                <a class="btn btn-danger w-100" href="javascript:void(0)" onclick="installer();"><i class="fas fa-play"></i>&nbsp;&nbsp;&nbsp;2. {{ text_run_installer }}</a>
+              </div>
+            </div>
+            {% endif %}
+
+            <div class="row mb-3">
+              <label class="col-sm-2 col-form-label">VQMod Path</label>
+              <label class="col-sm-4 col-form-label" style="text-align: left; font-weight: normal;">
+                {% if vqmod_path %}
+                  {{ vqmod_path }}
+                {% else %}
+                  {#
+                  {% if vqmod_vendor %}
+                  <a class="btn btn-info" href="javascript:void(0)" onclick="vendor();"><i class="fas fa-play-circle"></i> {{ text_extract }} VQMod</a>
+                  {% endif %}
+                  #}
+                  <div class="text-danger">{{ text_not_found }}</div>
+                {% endif %}
+              </label>
+
+              <label class="col-sm-2 col-form-label">VQMod installer</label>
+              <label class="col-sm-4 col-form-label pt-0 pb-0" style="text-align: left; font-weight: normal;">
+                {# <a class="btn btn-info" href="{{ vqmod_installer }}" target="_blank"><i class="fas fa-play-circle"></i> {{ text_run_installer }}</a> #}
+                <a class="btn btn-info" href="javascript:void(0)" onclick="installer();"><i class="fas fa-play-circle"></i> {{ text_run_installer }}</a>
+              </label>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-2 col-form-label">VQMod version</label>
+              <label class="col-sm-4 col-form-label" style="text-align: left; font-weight: normal;">
+                {% if vqmod_version %}
+                  {{ vqmod_version }}
+                {% else %}
+                  <div class="text-danger">{{ text_not_installed }}</div>
+                {% endif %}
+              </label>
+
+              <label class="col-sm-2 col-form-label">VQMod Logging</label>
+              <label class="col-sm-4 col-form-label" style="text-align: left; font-weight: normal;">{% if vqmod_logging %}{{ text_enabled }}{% else %}<div class="text-danger">{{ text_disabled }}</div>{% endif %}</label>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-2 col-form-label pt-2">VQMod XML Dump</label>
+              <label class="col-sm-4 col-form-label pt-0 pb-0" style="text-align: left; font-weight: normal;">
+                <a class="btn btn-warning" href="{{ download_xml }}"><i class="fas fa-download"></i> {{ text_download }} XML</a>
+              </label>
+
+              <label class="col-sm-2 col-form-label pt-2">VQMod Cache Dump</label>
+              <label class="col-sm-4 col-form-label pt-0 pb-0" style="text-align: left; font-weight: normal;">
+                <a class="btn btn-warning" href="{{ download_vqcache }}"><i class="fas fa-download"></i> {{ text_download }} VQCache</a>
+              </label>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-2 col-form-label">PHP</label>
+              <label class="col-sm-4 col-form-label" style="text-align: left; font-weight: normal;">{{ php_version }}</label>
+
+              <label class="col-sm-2 col-form-label">MySQL</label>
+              <label class="col-sm-4 col-form-label" style="text-align: left; font-weight: normal;">{{ mysql_version }}</label>
+            </div>
+          </div>
+
+          <div id="tab-log" class="tab-pane fade">
+            <div class="row mb-3">
+              <textarea wrap="off" rows="20" name="vqmod_log" class="form-control" readonly="readonly"></textarea>
+            </div>
+            <div class="text-center">
+              <a class="btn btn-info" href="javascript:void(0)" onclick="get_log();"><i class="fas fa-sync"></i> {{ button_refresh }}</a>
+              <a class="btn btn-danger" href="javascript:void(0)" onclick="clear_log();"><i class="fas fa-eraser"></i> {{ button_clear }}</a>
+              <a class="btn btn-warning" href="{{ download_log }}"><i class="fas fa-download"></i> {{ button_download }}</a>
+            </div>
+          </div>
+
+          <div id="tab-about" class="tab-pane fade">
+            <div class="row mb-3">
+              <label class="col-sm-2 col-form-label">Product</label>
+              <label class="col-sm-10 col-form-label" style="text-align: left; font-weight: normal;">
+              VQMod Manager {{ ex_version }} by Cl!cker
+              </label>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-2 col-form-label">Support</label>
+              <label class="col-sm-10 col-form-label" style="text-align: left; font-weight: normal;">
+              info@clicker.com.ua
+              </label>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-2 col-form-label">Our extensions</label>
+              <label class="col-sm-10 col-form-label" style="text-align: left; font-weight: normal;">
+              <a href="https://www.opencart.com/index.php?route=marketplace/extension&filter_member=Cl!cker" target="_blank">OpenCart Marketplace</a> or <a href="https://opencart.click" target="_blank">opencart.click</a>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.vq-info {
+  float: right;
+  font-size: 1.2rem;
+}
+.alert.alert-success, .alert.alert-danger {
+	position: fixed;
+	z-index: 1000;
+	right: 21px;
+	top: 150px;
+}
+pre.error {
+  color: red;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  font-size: 85%;
+}
+.fog {
+  opacity: 0.9;
+  pointer-events: none;
+  position: relative;
+  -webkit-user-select: none; /* webkit (safari, chrome) browsers */
+  -moz-user-select: none; /* mozilla browsers */
+  -khtml-user-select: none; /* webkit (konqueror) browsers */
+  -ms-user-select: none; /* IE10+ */
+}
+.fog:after {
+  display: block;
+  content: " ";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /*background: rgba(255,255,255,0.5);*/
+  background: -moz-linear-gradient(top, rgba(255,255,255,0.01) 0%, rgba(255,255,255,0.7) 20%, rgba(255,255,255,0.7) 80%, rgba(246,246,246,0.01) 100%); /* FF3.6-15 */
+  background: -webkit-linear-gradient(top, rgba(255,255,255,0.01) 0%,rgba(255,255,255,0.7) 20%,rgba(255,255,255,0.7) 80%,rgba(246,246,246,0.01) 100%); /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to bottom, rgba(255,255,255,0.01) 0%,rgba(255,255,255,0.7) 20%,rgba(255,255,255,0.7) 80%,rgba(246,246,246,0.01) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#33ffffff', endColorstr='#33f6f6f6',GradientType=0 ); /* IE6-9 */
+  z-index: 10000;
+}
+#loading-message {
+  display:none;
+}
+#loading-message .fas.fa-spin {
+  float: left;
+  margin: 0 0 0 -50px;
+  font-size: 36px;
+  transform-origin: 50% 51%;
+}
+.fog #loading-message {
+  display: block;
+  position: fixed;
+  opacity: 1;
+  padding: 25px;
+  padding-left: 70px;
+  width: 350px;
+  max-width: 100%;
+  left: calc(50% - 175px);
+  top: 30%;
+  background: rgba(251,154,29,0.8);
+  color: #FFFFFF;
+  z-index:101;
+  border: 3px solid rgba(251,154,29,1);
+  border-radius:10px;
+}
+</style>
+
+<script type="text/javascript">
+function filterVQMods(op) {
+  var params = '';
+
+  if (op == 'clear') {
+    $("#filter-vqmod input, #filter-vqmod select").each(function(index) {
+      $(this).val('');
+    });
+  }
+
+  $("#filter-vqmod input, #filter-vqmod select").each(function(index) {
+    if (String($(this).val()).length) {
+      params += '&' + $(this).attr('name') + '=' + encodeURIComponent($(this).val());
+    }
+  });
+
+  location = '{{ filter }}' + params;
+}
+</script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  //get_log({no_fog: 1});
+  //get_modifications({no_fog: 1});
+  $(document).on('click', '.nav-link[href="#tab-log"]', function() {
+    get_log({no_fog: 0});
+  });
+  $(document).on('click', '.nav-link[href="#tab-modification"]', function() {
+    get_modifications({no_fog: 0});
+  });
+
+  {% if not vqmod_version %}
+	console.log($('.nav-link[href="#tab-maintenance"]'));
+    $('.nav-link[href="#tab-maintenance"]').click();
+  {% endif %}
+});
+
+function get_log(op) {
+  var op = op ? op : {};
+  $.ajax({
+    type: 'GET',
+    async: true,
+    url: '{{ get_log }}',
+    dataType: 'json',
+    beforeSend: function() {
+      $('[name="vqmod_log"]').val('');
+      if (!op.no_fog) {
+        $('#content').addClass('fog');
+      }
+    },
+    complete: function() {
+      if (!op.no_fog) {
+        $('#content').removeClass('fog');
+      }
+    },
+    success: function(data) {
+      if (data.log) {
+        $('[name="vqmod_log"]').val(data.log);
+      }
+    },
+    error: function (xhr, ajaxOptions, thrownError) {
+      alert('HTTP code: ' + xhr.status + ' Response text: ' + " \n" + xhr.responseText);
+    }
+  });
+}
+
+function clear_log() {
+  if (confirm('{{ text_confirm }}')) {
+    $.ajax({
+      type: 'GET',
+      async: true,
+      url: '{{ clear_log }}',
+      dataType: 'json',
+      beforeSend: function() {
+        $('#content').addClass('fog');
+      },
+      complete: function() {
+        $('#content').removeClass('fog');
+      },
+      success: function(data) {
+        get_log();
+      },
+      error: function (xhr, ajaxOptions, thrownError) {
+        alert('HTTP code: ' + xhr.status + ' Response text: ' + " \n" + xhr.responseText);
+      }
+    });
+  }
+}
+
+function get_modifications(op) {
+  var op = op ? op : {};
+  $.ajax({
+    type: 'GET',
+    async: true,
+    url: '{{ get_modifications }}',
+    dataType: 'json',
+    beforeSend: function() {
+      if (!op.no_fog) {
+        $('#content').addClass('fog');
+      }
+    },
+    complete: function() {
+      if (!op.no_fog) {
+        $('#content').removeClass('fog');
+      }
+    },
+    success: function(data) {
+      if (data.html) {
+        $('#tab-modification .table-responsive').html(data.html);
+      }
+    },
+    error: function (xhr, ajaxOptions, thrownError) {
+      $('#tab-modification .table-responsive').html('');
+      alert('HTTP code: ' + xhr.status + ' Response text: ' + " \n" + xhr.responseText);
+    }
+  });
+}
+
+function vendor(op) {
+  var op = op ? op : {};
+  $.ajax({
+    type: 'GET',
+    async: true,
+    url: '{{ vqmod_vendor }}',
+    dataType: 'json',
+    beforeSend: function() {
+      if (!op.no_fog) {
+        $('#content').addClass('fog');
+      }
+    },
+    complete: function() {
+      if (!op.no_fog) {
+        $('#content').removeClass('fog');
+      }
+    },
+    success: function(data) {
+      if (data.success) {
+        alert(data.success);
+        window.location = window.location;
+      }
+
+      if (data.error) {
+        alert(data.error);
+      }
+    },
+    error: function (xhr, ajaxOptions, thrownError) {
+      alert('HTTP code: ' + xhr.status + ' Response text: ' + " \n" + xhr.responseText);
+    }
+  });
+}
+
+function installer(op) {
+  var op = op ? op : {};
+  $.ajax({
+    type: 'GET',
+    async: true,
+    url: '{{ vqmod_installer }}',
+    dataType: 'html',
+    beforeSend: function() {
+      if (!op.no_fog) {
+        $('#content').addClass('fog');
+      }
+    },
+    complete: function() {
+      if (!op.no_fog) {
+        $('#content').removeClass('fog');
+      }
+    },
+    success: function(data) {
+      if (data) {
+        alert(data);
+        window.location = window.location;
+      }
+    },
+    error: function (xhr, ajaxOptions, thrownError) {
+      alert('HTTP code: ' + xhr.status + ' Response text: ' + " \n" + xhr.responseText);
+    }
+  });
+}
+
+// Upload
+$('#button-upload').on('click', function() {
+  $('#form-upload').remove();
+
+  $('body').prepend('<form enctype="multipart/form-data" id="form-upload" style="display: none;"><input type="file" name="file" accept="application/xml" /></form>');
+
+  $('#form-upload input[name=\'file\']').trigger('click');
+
+  if (typeof timer != 'undefined') {
+    clearInterval(timer);
+  }
+
+  timer = setInterval(function() {
+    if ($('#form-upload input[name=\'file\']').val() != '') {
+      clearInterval(timer);
+
+      $.ajax({
+        url: '{{ upload }}',
+        type: 'post',
+        dataType: 'json',
+        data: new FormData($('#form-upload')[0]),
+        cache: false,
+        contentType: false,
+        processData: false,
+        beforeSend: function() {
+          $('#button-upload').button('loading');
+          $('#content').addClass('fog');
+        },
+        complete: function() {
+          $('#content').removeClass('fog');
+          $('#button-upload').button('reset');
+        },
+        success: function(json) {
+          if (json['error']) {
+            alert(json['error']);
+          }
+
+          if (json['success']) {
+            alert(json['success']);
+            // $('#extension').load('index.php?route=marketplace/installer|extension&user_token={{ user_token }}');
+            window.location = window.location;
+          }
+        },
+        error: function(xhr, ajaxOptions, thrownError) {
+          alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+        }
+      });
+    }
+  }, 500);
+});
+
+</script>
+
+{{ footer }}

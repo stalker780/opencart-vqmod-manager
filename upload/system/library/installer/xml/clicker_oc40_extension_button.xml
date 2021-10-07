@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<modification>
+	<id>Cl!cker Extensions buttons</id>
+	<version>1.0.0</version>
+	<vqmver required="true">2.6.6</vqmver>
+	<author>Cl!cker</author>
+	<link>https://opencart.click</link>
+	<info>Replace Selectbox with Buttons in Extensions list</info>
+
+	<file name="admin/controller/marketplace/extension.php">
+		<operation>
+			<search position="before" trim="true"><![CDATA[
+				'href' => $this->url->link('extension/' . $extension
+			]]></search>
+			<add trim="true"><![CDATA[
+				'href_button' => $this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=' . $extension),
+			]]></add>
+		</operation>
+		<operation>
+			<search position="after" trim="true"><![CDATA[
+				$data['type'] = '';
+			]]></search>
+			<add trim="true"><![CDATA[
+				$data['type'] = $this->request->get['type'] = 'module';
+			]]></add>
+		</operation>
+		<operation>
+			<search position="before" trim="true"><![CDATA[
+				$this->response->setOutput($this->load->view('marketplace/extension'
+			]]></search>
+			<add trim="true"><![CDATA[
+				if (empty($data['type'])) {
+					$data['type'] = !empty($data['categories'][0]['code']) ? $data['categories'][0]['code'] : '';
+				}
+			]]></add>
+		</operation>
+	</file>
+
+	<file name="admin/view/template/marketplace/extension.twig">
+		<operation>
+			<search position="before" trim="true"><![CDATA[
+				{{ footer }}
+			]]></search>
+			<add trim="true"><![CDATA[
+				<style>
+					.card .input-group select[name="type"], .card .input-group .input-group-text {
+						display: none;
+					}
+					.card .input-group .btn {
+						margin-bottom: 10px;
+					}
+					.card .input-group.type {
+						margin: -10px -10px -20px;
+						width: calc(100% + 20px);
+					}
+					.card .card.bg-light {
+						background: #f5f5f5!important;
+					}
+				</style>
+			]]></add>
+		</operation>
+		<operation>
+			<search position="before" trim="true"><![CDATA[
+				<div class="input-group">
+			]]></search>
+			<add trim="true"><![CDATA[
+				<div class="input-group type">
+					{% for category in categories %}
+						{% if type == category.code %}
+							<a class="btn btn-primary" href="{{ category.href_button }}">{{ category.text }}</a>
+						{% else %}
+							<a class="btn btn-default" href="{{ category.href_button }}">{{ category.text }}</a>
+						{% endif %}
+					{% endfor %}
+				</div>
+			]]></add>
+		</operation>
+	</file>
+
+<!-- Disable slow banner in extensions page. It takes too long to load -->
+	<!-- <file name="admin/controller/marketplace/promotion.php"> -->
+		<!-- <operation> -->
+			<!-- <search position="after" trim="true"><![CDATA[ -->
+				<!-- function index() -->
+			<!-- ]]></search> -->
+			<!-- <add trim="true"><![CDATA[ -->
+				<!-- return ''; -->
+			<!-- ]]></add> -->
+		<!-- </operation> -->
+	<!-- </file> -->
+
+</modification>

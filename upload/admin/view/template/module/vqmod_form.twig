@@ -1,0 +1,813 @@
+{{ header }}{{ column_left }}
+<div id="content">
+<div class="page-header">
+  <div class="container-fluid">
+    <div class="float-end" id="buttons-panel">
+      {% if vqmod_id %}
+        <button type="button" data-bs-toggle="tooltip" title="{{ button_save_refresh }} (CTRL+S)" class="btn btn-info" onclick="save_refresh()"><i class="fas fa-save"></i>&nbsp;+&nbsp;<i class="fa fa-refresh fas fa-sync-alt"></i></button>
+      {% endif %}
+      <button type="submit" form="form-vqmod" data-bs-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fas fa-save"></i></button>
+      <a href="{{ cancel }}" data-bs-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-light"><i class="fas fa-reply"></i></a></div>
+    <h1>{{ heading_title }}</h1>
+    <ol class="breadcrumb">
+      {% for breadcrumb in breadcrumbs %}
+      <li class="breadcrumb-item"><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+      {% endfor %}
+    </ol>
+  </div>
+</div>
+<div class="container-fluid">
+    {% if error_warning %}
+	<div class="alert alert-danger alert-dismissible"><i class="fas fa-exclamation-circle"></i> {{ error_warning }}
+		<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+	</div>
+    {% endif %}
+    {% if success %}
+	<div class="alert alert-success alert-dismissible"><i class="fas fa-check-circle"></i> {{ success }}
+		<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+	</div>
+    {% endif %}
+  <div class="card">
+  <div class="card-header"><i class="fa fa-pencil fas fa-pencil-alt"></i> {{ text_edit }}</div>
+  <div class="card-body">
+    <ul class="nav nav-tabs">
+      <li class="nav-item active"><a href="#tab-general" data-bs-toggle="tab" class="nav-link active">{{ tab_general }}</a></li>
+      <li class="nav-item"><a href="#tab-modification" data-bs-toggle="tab" class="nav-link">{{ tab_modification }}</a></li>
+      <li class="nav-item"><a href="#tab-log" data-bs-toggle="tab" class="nav-link">{{ tab_log }}</a></li>
+    </ul>
+    <div class="tab-content">
+      <div id="tab-general" class="tab-pane fade show active">
+        <form action="{{ action }}" method="post" enctype="application/x-www-form-urlencoded" id="form-vqmod" class="form-horizontal" onsubmit="form_onsubmit();">
+          <div class="row mb-3 required">
+            <label for="input-filename" class="col-md-4 col-xl-2 col-form-label">{{ entry_filename }}</label>
+            <div class="col-md-8 col-xl-10">
+              <div class="input-group">
+                <input type="text" name="filename" value="{{ filename }}" placeholder="{{ text_filename_example }}" id="input-filename" class="form-control">
+                <input type="hidden" name="filename_old" value="{{ filename }}">
+                <input type="hidden" name="vqmod_id" value="{{ vqmod_id }}">
+              </div>
+              {% if error_filename %}
+                <div class="invalid-tooltip">{{ error_filename }}</div>
+              {% endif %}
+              <small class="form-text text-muted">{{ filepath }}</small>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label class="col-md-4 col-xl-2 col-form-label" for="input-status">{{ entry_status }}</label>
+            <div class="col-md-8 col-xl-10">
+              <div class="input-group">
+                <div class="btn-group" role="group" id="input-status">
+                  {% if status %}
+                    <input type="radio" class="btn-check" name="status" id="status-1" autocomplete="off" value="1" checked="checked">
+                    <label class="btn btn-outline-secondary" for="status-1"> {{ text_enabled }}</label>
+                    <input type="radio" class="btn-check" name="status" id="status-0" autocomplete="off" value="0">
+                    <label class="btn btn-outline-secondary" for="status-0"> {{ text_disabled }}</label>
+                  {% else %}
+                    <input type="radio" class="btn-check" name="status" id="status-1" autocomplete="off" value="1">
+                    <label class="btn btn-outline-secondary" for="status-1"> {{ text_enabled }}</label>
+                    <input type="radio" class="btn-check" name="status" id="status-0" autocomplete="off" value="0" checked="checked">
+                    <label class="btn btn-outline-secondary" for="status-0"> {{ text_disabled }}</label>
+                  {% endif %}
+                </div>
+              </div>
+
+              {#<select name="status" id="input-status" class="form-select">
+                {% if status %}
+                <option value="1" selected="selected">{{ text_enabled }}</option>
+                <option value="0">{{ text_disabled }}</option>
+                {% else %}
+                <option value="1">{{ text_enabled }}</option>
+                <option value="0" selected="selected">{{ text_disabled }}</option>
+                {% endif %}
+              </select>#}
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-4 col-xl-2 sticky-top">
+              <div class="row">
+                <label class="col-sm-12 col-form-label" for="input-xml">{{ entry_xml }}</label>
+              </div>
+              <div class="row sticky-top">
+                <div class="col-sm-12 xml-outline"></div>
+                <div class="col-sm-12 xml-error"></div>
+                {% if error_xml_info %}
+                <div class="col-sm-12 xml-error-info">
+                  <br>
+                  <pre class="error">{{ error_xml_info }}</pre>
+                </div>
+                {% endif %}
+
+              </div>
+            </div>
+            <div class="col-md-8 col-xl-10">
+              <div class="row pb-1">
+                <div class="col"><a href="https://github.com/vqmod/vqmod/wiki/Scripting" target="_blank">VQMod Scripting Wiki</a></div>
+                <div class="col">CTRL+S - {{text_save }}</div>
+                <div class="col">CTRL+Enter/Esc - {{text_fullscreen }}/{{ text_off }}</div>
+              </div>
+              <textarea name="xml" placeholder="{{ entry_xml }}" id="input-xml">{% autoescape false %}{{ xml|raw }}{% endautoescape %}</textarea>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div id="tab-modification" class="tab-pane fade">
+        <div class="table-responsive">
+          <table class="table table-bordered table-hover">
+            <thead>
+              <tr>
+                <td class="text-start">{{ column_filename }}</td>
+                <td class="text-start">{{ column_name }}</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-start"></td>
+                <td class="text-start"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="text-center">
+          <a class="btn btn-info" href="javascript:void(0)" onclick="get_modifications();"><i class="fas fa-sync"></i> {{ button_refresh }}</a>
+        </div>
+      </div>
+
+      <div id="tab-log" class="tab-pane fade">
+        <div class="row mb-3">
+          <textarea wrap="off" rows="20" name="vqmod_log" class="form-control" readonly="readonly"></textarea>
+        </div>
+        <div class="text-center">
+          <a class="btn btn-info" href="javascript:void(0)" onclick="get_log();"><i class="fas fa-sync"></i> {{ button_refresh }}</a>
+          <a class="btn btn-danger" href="javascript:void(0)" onclick="clear_log();"><i class="fas fa-eraser"></i> {{ button_clear }}</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+
+</div>
+
+<link href="/extension/clicker_vqmod_manager/admin/view/javascript/codemirror/lib/codemirror.css" rel="stylesheet" />
+<script type="text/javascript" src="/extension/clicker_vqmod_manager/admin/view/javascript/codemirror/lib/codemirror.js"></script>
+<script type="text/javascript" src="/extension/clicker_vqmod_manager/admin/view/javascript/codemirror/mode/xml/xml.js"></script>
+<link href="/extension/clicker_vqmod_manager/admin/view/javascript/codemirror/addon/hint/show-hint.css" rel="stylesheet" />
+<script type="text/javascript" src="/extension/clicker_vqmod_manager/admin/view/javascript/codemirror/addon/hint/show-hint.js"></script>
+<script type="text/javascript" src="/extension/clicker_vqmod_manager/admin/view/javascript/codemirror/addon/hint/xml-hint.js"></script>
+<script type="text/javascript" src="/extension/clicker_vqmod_manager/admin/view/javascript/codemirror/addon/fold/xml-fold.js"></script>
+<script type="text/javascript" src="/extension/clicker_vqmod_manager/admin/view/javascript/codemirror/addon/edit/matchtags.js"></script>
+<script type="text/javascript" src="/extension/clicker_vqmod_manager/admin/view/javascript/codemirror/addon/selection/active-line.js"></script>
+<link href="/extension/clicker_vqmod_manager/admin/view/javascript/codemirror/addon/display/fullscreen.css" rel="stylesheet" />
+<script type="text/javascript" src="/extension/clicker_vqmod_manager/admin/view/javascript/codemirror/addon/display/fullscreen.js"></script>
+{# <script type="text/javascript" src="/extension/clicker_vqmod_manager/admin/view/javascript/codemirror/addon/edit/trailingspace.js"></script> #}
+<script type="text/javascript" src="/extension/clicker_vqmod_manager/admin/view/javascript/codemirror/addon/edit/closetag.js"></script>
+
+<style>
+#container {
+  overflow: initial;
+}
+.sticky-parent {
+  overflow: initial;
+}
+.sticky-top {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index: 1020;
+  oveflow-x: auto;
+}
+.sticky-top:before,
+.sticky-top:after {
+  content: '';
+  display: table;
+}
+.CodeMirror {
+  border: 1px solid #cccccc;
+  height: 100% !important;
+  /*height: 1000px;*/
+}
+.CodeMirror-scroll {
+  background: #FFFAF4;
+}
+.CodeMirror-fullscreen {
+  z-index: 1050;
+}
+.cm-trailingspace {
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAACCAYAAAB/qH1jAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3QUXCToH00Y1UgAAACFJREFUCNdjPMDBUc/AwNDAAAFMTAwMDA0OP34wQgX/AQBYgwYEx4f9lQAAAABJRU5ErkJggg==);
+  background-position: bottom left;
+  background-repeat: repeat-x;
+}
+#buttons-panel-float {
+  /*display: none;*/
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  background: rgba(255,255,255,0.6);
+  padding: 10px;
+  z-index: 1060;
+}
+.btn-outline {
+  /*float:right;*/
+  width: 100%;
+  direction: rtl;
+  text-align: right;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+.tooltip-inner.tooltip-xml {
+  max-width: 400px;
+}
+.xml-outline.affix {
+  top: 20px;
+  width:auto;
+  overflow-y:auto;
+}
+.line-search-highlight {
+  background-color: rgba(255,162,0,0.5);
+  -webkit-transition: background-color 6000ms;
+  transition: background-color 6000ms;
+}
+.alert.alert-success {
+	position: fixed;
+	z-index: 1000;
+	right: 21px;
+	top: 150px;
+}
+pre.error {
+  color: red;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  font-size: 85%;
+}
+{# #content.fog {
+  opacity: 0.5;
+  pointer-events: none;
+  position: relative;
+} #}
+
+.fog {
+  opacity: 0.9;
+  pointer-events: none;
+  position: relative;
+  -webkit-user-select: none; /* webkit (safari, chrome) browsers */
+  -moz-user-select: none; /* mozilla browsers */
+  -khtml-user-select: none; /* webkit (konqueror) browsers */
+  -ms-user-select: none; /* IE10+ */
+}
+.fog:after {
+  display: block;
+  content: " ";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /*background: rgba(255,255,255,0.5);*/
+  background: -moz-linear-gradient(top, rgba(255,255,255,0.01) 0%, rgba(255,255,255,0.7) 20%, rgba(255,255,255,0.7) 80%, rgba(246,246,246,0.01) 100%); /* FF3.6-15 */
+  background: -webkit-linear-gradient(top, rgba(255,255,255,0.01) 0%,rgba(255,255,255,0.7) 20%,rgba(255,255,255,0.7) 80%,rgba(246,246,246,0.01) 100%); /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to bottom, rgba(255,255,255,0.01) 0%,rgba(255,255,255,0.7) 20%,rgba(255,255,255,0.7) 80%,rgba(246,246,246,0.01) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#33ffffff', endColorstr='#33f6f6f6',GradientType=0 ); /* IE6-9 */
+  z-index: 10000;
+}
+#loading-message {
+  display:none;
+}
+#loading-message .fas.fa-spin {
+  float: left;
+  margin: 0 0 0 -50px;
+  font-size: 36px;
+  transform-origin: 50% 51%;
+}
+.fog #loading-message {
+  display: block;
+  position: fixed;
+  opacity: 1;
+  padding: 25px;
+  padding-left: 70px;
+  width: 350px;
+  max-width: 100%;
+  left: calc(50% - 175px);
+  top: 30%;
+  background: rgba(251,154,29,0.8);
+  color: #FFFFFF;
+  z-index:101;
+  border: 3px solid rgba(251,154,29,1);
+  border-radius:10px;
+}
+
+@media only screen and (max-width: 800px) {
+  .xml-outline {
+    display: none;
+  }
+}
+</style>
+<script type="text/javascript">
+var form_data = {
+  'user_token': '{{ user_token }}',
+  'vqmod_id': '{{ vqmod_id }}',
+};
+
+var codemirror_editor;
+
+$(document).ready(function() {
+  codemirror_editor = CodeMirror.fromTextArea(document.getElementById("input-xml"), {
+    mode: "application/xml",
+    lineNumbers: true,
+    lineWrapping: true,
+    autofocus: true,
+    //styleActiveLine: true,
+    styleActiveLine: {nonEmpty: true},
+    matchTags: {bothTags: true},
+    indentWithTabs: true,
+    indentUnit: 4,
+    //height: '1000px',
+    //theme: 'monokai',
+    autoCloseTags: true,
+    extraKeys: {
+      "'<'": completeAfter,
+      "'/'": completeIfAfterLt,
+      "' '": completeIfInTag,
+      "'='": completeIfInTag,
+      "Ctrl-Space": "autocomplete"
+    },
+    hintOptions: {schemaInfo: tags},
+    showTrailingSpace: true,
+    extraKeys: {
+      "Ctrl-Enter": function(cm) {
+        cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+      },
+      "Esc": function(cm) {
+        if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+      },
+      "Ctrl-S": function(instance) {
+        {% if vqmod_id %}
+          save_refresh();
+        {% else %}
+          $('#form-vqmod').submit();
+        {% endif %}
+      },
+    }
+  });
+
+  setTimeout(function() {
+    if ($('#buttons-panel').length) {
+      $('body').append('<div id="buttons-panel-float">' + $('#buttons-panel').html() + '</div>');
+    }
+
+    $('.nav.nav-tabs a[href="#tab-general"]').click(function() {
+      $(window).resize();
+    });
+
+    codemirror_editor.focus();
+  }, 100);
+
+  setTimeout(function() { // autosave to textarea
+    $('form div.CodeMirror').each(function(index) {
+      if ($(this)[0].CodeMirror) {
+        save_to_textarea(600, $(this)[0].CodeMirror, null);
+        $(this)[0].CodeMirror.on("blur", function(cm, change) {
+          cm.save();
+        });
+        $(this)[0].CodeMirror.on("change", function(cm, change) {
+          save_to_textarea(600, cm, change);
+        });
+        $(this)[0].CodeMirror.on("cursorActivity", function(cm, change) {
+          $(window).resize();
+        });
+      }
+    });
+  }, 120);
+
+  //get_log({no_fog: 1});
+  //get_modifications({no_fog: 1});
+  $(document).ready(function() {
+    //get_log({no_fog: 1});
+    //get_modifications({no_fog: 1});
+    $(document).on('click', '.nav-link[href="#tab-log"]', function() {
+      get_log({no_fog: 0});
+    });
+    $(document).on('click', '.nav-link[href="#tab-modification"]', function() {
+      get_modifications({no_fog: 0});
+    });
+  });
+});
+
+var timeout_resize = null;
+$(window).resize(function() {
+  clearTimeout(timeout_resize);
+
+  timeout_resize = setTimeout(function() {
+    $('div.xml-outline')
+      .css('max-height', window.innerHeight-50+'px')
+      .css('width', $('div.xml-outline').parent().width()+'px');
+  }, 600);
+});
+
+$(window).scroll(function() {
+  $(window).resize();
+});
+
+var timeout_save = null;
+function save_to_textarea(timeout, cm, change) {
+  for (h in lines_hightlight) {
+    cm.removeLineClass(h, 'background', 'line-search-highlight');
+  }
+  $(".line-search-highlight").removeClass('line-search-highlight');
+  lines_hightlight = {};
+
+  var obj_cm = {
+    'cm': cm,
+    'change': change,
+  };
+
+  if (timeout_save === 0) {
+    cm.save();
+    return true;
+  }
+
+  clearTimeout(timeout_save);
+
+  timeout_save = setTimeout(function(object) {
+    object.cm.save();
+    draw_outline(obj_cm);
+    //console.log('save', change, cm.getValue());
+  }, timeout, obj_cm);
+}
+
+function draw_outline(obj_cm) {
+  //$('div.xml-outline').html('');
+  //console.log(window.innerHeight, $('div.xml-outline').parent().width());
+  $('div.xml-outline .error').remove();
+  $('div.xml-error').html('');
+  $(window).resize();
+
+  //var xml_files = [];
+  //var xml_contents = null;
+  try {
+    var xml_contents = $.parseXML(obj_cm.cm.getValue());
+  } catch (e) {
+    console.warn(e);
+    $('div.xml-outline').html('');
+    $('div.xml-error').html('<pre class="error"">{{ error_xml }}</pre>');
+    var xml_contents = null;
+  }
+
+  if (xml_contents) {
+    //console.log(xml_contents.activeElement);
+    xml_contents = xml_contents.activeElement;
+    var checks = ['id', 'version', 'vqmver', 'author', 'file'];
+    var xml_error = '';
+    if (xml_contents && xml_contents.children && xml_contents.children.length) {
+      if (xml_contents.nodeName != 'modification') {
+        xml_error += '<modification> tag not found' + '|br|';
+      }
+
+      for (field in checks) {
+        var check = 0;
+        for (var i = 0; i < xml_contents.children.length; i++) {
+          var xml_node = xml_contents.children[i];
+          if (xml_node.nodeName == checks[field]) {
+            check = 1;
+            break;
+          }
+        }
+
+        if (!check) {
+          xml_error += '<' + checks[field] + '> tag not found' + '|br|';
+        }
+      }
+
+      if (xml_error) {
+        var htmlenc = function(s) {
+          return (s).replace(/./gm, function(s) {
+            return (s.match(/[a-z0-9\s]+/i)) ? s : "&#" + s.charCodeAt(0) + ";";
+          });
+        }
+        var str_replace=function(search,replace,string){string=String(string).split(search);string=string.join(replace);return string;}
+
+        xml_error = htmlenc(xml_error);
+
+        //console.log(xml_error);
+        xml_error = str_replace('&#124;br&#124;', '<br>', xml_error);
+
+        $('div.xml-error-info').html('');
+        $('div.xml-error').html('<pre class="error">' + xml_error + '</pre>')
+      }
+    }
+
+    if (xml_contents && xml_contents.children && xml_contents.children.length && xml_contents.nodeName == 'modification') {
+      $('div.xml-outline').html('');
+      var j = 1;
+      for (var i = 0; i < xml_contents.children.length; i++) {
+        var xml_node = xml_contents.children[i];
+
+        if (xml_node.nodeName && xml_node.nodeName == 'file') {
+          //xml_files.push(xml_node);
+
+          var nodes = ['path', 'name'];
+
+          for (node in nodes) {
+            var node = nodes[node];
+            if (xml_node.attributes && typeof xml_node.attributes[node] != 'undefined') {
+              var html_button = '<div class="row my-2">';
+              html_button += '<div class="col-sm-12">';
+              html_button += '<button type="button" data-bs-toggle="tooltip" title="'+xml_node.attributes[node].nodeValue+'" class="btn btn-info btn-outline" onclick="cm_find(\''+xml_node.attributes[node].nodeValue+'\')">'/*+j.pad(4)+ '&nbsp;'*/ +pretty_path(xml_node.attributes[node].nodeValue)+/*'&nbsp;>>>'+*/'</button>';
+              html_button += '</div>';
+              html_button += '</div>';
+              $('div.xml-outline').append(html_button);
+              j++;
+            }
+          }
+        }
+      }
+
+      $('div.xml-error-info').html('');
+    }
+
+    $('div.xml-outline [data-bs-toggle=\'tooltip\']').tooltip({
+      container: 'body',
+      html: true,
+      template: '<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner tooltip-xml"></div></div>',
+    });
+  }
+}
+
+var timeout_search_fade1 = null;
+var timeout_search_fade2 = null;
+var lines_hightlight = {};
+function cm_find(search_text) {
+  $('form div.CodeMirror').each(function(index) {
+    if ($(this)[0].CodeMirror) {
+      var cm_value = String($(this)[0].CodeMirror.getValue()).split("\n");
+
+      for (var i = 0; i < cm_value.length; i++) {
+        if (String(cm_value[i]).includes('"'+search_text+'"')) {
+          $(".line-search-highlight").removeClass('line-search-highlight');
+          $(this)[0].CodeMirror.removeLineClass(i, 'background', 'line-search-highlight');
+          $(this)[0].CodeMirror.addLineClass(i, 'background', 'line-search-highlight');
+          $(".line-search-highlight").attr('style', '');
+
+          lines_hightlight[i] = i;
+
+          clearTimeout(timeout_search_fade1);
+          timeout_search_fade1 = setTimeout(function(obj) {
+            $(".line-search-highlight").css('background-color', 'rgba(255,255,255,0)');
+
+            clearTimeout(timeout_search_fade2);
+            timeout_search_fade2 = setTimeout(function(obj) {
+
+              for (h in lines_hightlight) {
+                obj.codemirror_obj.removeLineClass(h, 'background', 'line-search-highlight');
+              }
+
+              $(".line-search-highlight").removeClass('line-search-highlight');
+
+              lines_hightlight = {};
+            }, 6100, obj);
+          }, 500, {codemirror_obj: $(this)[0].CodeMirror, line: i});
+
+          $(this)[0].CodeMirror.focus();
+          $(this)[0].CodeMirror.setCursor({line: i, ch: 0});
+          break;
+        }
+      }
+    }
+  });
+}
+
+function pretty_path(str) {
+  str = String(str).toLowerCase();
+  var split = String(str).split(/[\\/]/);
+  var basename = split.pop();
+
+  if (split.length > 2) {
+    return split[0]+'/'+split[1]+'/.../'+basename;
+  } else {
+    return str;
+  }
+}
+
+function baseName(str) {
+  return String(str).split(/[\\/]/).pop();
+}
+
+Number.prototype.pad = function(size) {
+  var s = String(this);
+  while (s.length < (size || 2)) {s = "0" + s;}
+  return s;
+}
+
+
+var dummy = {
+  attrs: {
+    color: ["red", "green", "blue", "purple", "white", "black", "yellow"],
+    size: ["large", "medium", "small"],
+    description: null
+  },
+  children: []
+};
+
+var tags = {
+  "!top": ["top"],
+  "!attrs": {
+    id: null,
+    class: ["A", "B", "C"]
+  },
+  top: {
+    attrs: {
+      lang: ["en", "de", "fr", "nl"],
+      freeform: null
+    },
+    children: ["animal", "plant"]
+  },
+  animal: {
+    attrs: {
+      name: null,
+      isduck: ["yes", "no"]
+    },
+    children: ["wings", "feet", "body", "head", "tail"]
+  },
+  plant: {
+    attrs: {name: null},
+    children: ["leaves", "stem", "flowers"]
+  },
+  wings: dummy, feet: dummy, body: dummy, head: dummy, tail: dummy,
+  leaves: dummy, stem: dummy, flowers: dummy
+};
+
+
+function completeAfter(cm, pred) {
+  var cur = cm.getCursor();
+  if (!pred || pred()) setTimeout(function() {
+    if (!cm.state.completionActive)
+      cm.showHint({completeSingle: false});
+  }, 100);
+  return CodeMirror.Pass;
+}
+
+function completeIfAfterLt(cm) {
+  return completeAfter(cm, function() {
+    var cur = cm.getCursor();
+    return cm.getRange(CodeMirror.Pos(cur.line, cur.ch - 1), cur) == "<";
+  });
+}
+
+function completeIfInTag(cm) {
+  return completeAfter(cm, function() {
+    var tok = cm.getTokenAt(cm.getCursor());
+    if (tok.type == "string" && (!/['"]/.test(tok.string.charAt(tok.string.length - 1)) || tok.string.length == 1)) return false;
+    var inner = CodeMirror.innerMode(cm.getMode(), tok.state).state;
+    return inner.tagName;
+  });
+}
+
+function form_onsubmit() {
+  // trim trailing whitespaces
+  var lines = $('textarea[name=xml]').val().split(/\n/);
+  var text = [];
+  for (var i=0; i < lines.length; i++) {
+    text.push(String(lines[i]).replace(/\s+$/, '')); // rtrim
+  }
+  var text = text.join("\n");
+  $("textarea[name=xml]").val(text);
+
+  var cursor = codemirror_editor.getCursor();
+  codemirror_editor.getDoc().setValue($("textarea[name=xml]").val());
+  codemirror_editor.focus();
+  codemirror_editor.setCursor({line: cursor.line, ch: cursor.ch});
+}
+
+function get_log(op) {
+  var op = op ? op : {};
+  $.ajax({
+    type: 'GET',
+    async: true,
+    url: '{{ get_log }}&vqmod_id={{ vqmod_id }}',
+    dataType: 'json',
+    beforeSend: function() {
+      $('[name="vqmod_log"]').val('');
+      if (!op.no_fog) {
+        $('#content').addClass('fog');
+      }
+    },
+    complete: function() {
+      if (!op.no_fog) {
+        $('#content').removeClass('fog');
+      }
+    },
+    success: function(data) {
+      if (data.log) {
+        $('[name="vqmod_log"]').val(data.log);
+      }
+    },
+    error: function (xhr, ajaxOptions, thrownError) {
+      alert('HTTP code: ' + xhr.status + ' Response text: ' + " \n" + xhr.responseText);
+    }
+  });
+}
+
+function clear_log() {
+  if (confirm('{{ text_confirm }}')) {
+    $.ajax({
+      type: 'GET',
+      async: true,
+      url: '{{ clear_log }}',
+      dataType: 'json',
+      beforeSend: function() {
+        $('#content').addClass('fog');
+      },
+      complete: function() {
+        $('#content').removeClass('fog');
+      },
+      success: function(data) {
+        get_log();
+      },
+      error: function (xhr, ajaxOptions, thrownError) {
+        alert('HTTP code: ' + xhr.status + ' Response text: ' + " \n" + xhr.responseText);
+      }
+    });
+  }
+}
+
+function get_modifications(op) {
+  var op = op ? op : {};
+  $.ajax({
+    type: 'GET',
+    async: true,
+    url: '{{ get_modifications }}&vqmod_id={{ vqmod_id }}',
+    dataType: 'json',
+    beforeSend: function() {
+      if (!op.no_fog) {
+        $('#content').addClass('fog');
+      }
+    },
+    complete: function() {
+      if (!op.no_fog) {
+        $('#content').removeClass('fog');
+      }
+    },
+    success: function(data) {
+      if (data.html) {
+        $('#tab-modification .table-responsive').html(data.html);
+      }
+    },
+    error: function (xhr, ajaxOptions, thrownError) {
+      $('#tab-modification .table-responsive').html('');
+      alert('HTTP code: ' + xhr.status + ' Response text: ' + " \n" + xhr.responseText);
+    }
+  });
+}
+
+function save_refresh() {
+  var value_vqmod_id = $('input[name="vqmod_id"]').val();
+
+  form_onsubmit();
+
+  $.ajax({
+    type: 'POST',
+    async: true,
+    url: '{{ edit_refresh }}&vqmod_id=' + value_vqmod_id,
+    data: $('#form-vqmod').serialize(),
+    dataType: 'text',
+    beforeSend: function() {
+      $('.alert').remove();
+      $('#content').addClass('fog');
+    },
+    complete: function(xhr, textStatus) {
+      $('#content').removeClass('fog');
+    },
+    success: function(data) {
+      // check if vqmod_id was changed (filename or status changed), and reload a page if it was
+      var value_vqmod_id_new = $(data).find('input[name="vqmod_id"]').val();
+
+      if (value_vqmod_id_new != value_vqmod_id) {
+        $('#content').addClass('fog');
+        window.location = '{{ edit_refresh }}&vqmod_id=' + value_vqmod_id_new;
+        return;
+      }
+
+      if ($(data).find('#content form[id^=form] .invalid-tooltip').length && $(data).find('.alert.alert-danger').length) {
+        //console.log('.invalid-tooltip returned - submitting form');
+        $('#content').addClass('fog');
+        $("#content form[id^=form]").submit();
+      } else {
+        //$('#content form[id^=form]').closest('.container-fluid').prepend($(data).find('.alert'));
+      }
+
+      $('#content form[id^=form]').closest('.container-fluid').prepend($(data).find('.alert'));
+      $('.alert-success,.alert-warning,.alert-info').click(function() {$(this).remove();});
+      setTimeout(function(){$('.alert-success,.alert-warning,.alert-info').remove()},15000);
+
+      get_log({no_fog: 1});
+      get_modifications({no_fog: 1});
+    },
+    error: function (xhr, ajaxOptions, thrownError) {
+      alert('HTTP code: ' + xhr.status + ' Response text: ' + " \n" + xhr.responseText);
+    }
+  });
+}
+
+</script>
+
+{{ footer }}

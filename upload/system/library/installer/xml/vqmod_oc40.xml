@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<modification>
+	<id>VQMod TWIG fix OC 4.0</id>
+	<version>1.0.0</version>
+	<vqmver required="true">2.6.6</vqmver>
+	<author>Cl!cker</author>
+	<link>https://opencart.click</link>
+	<info>Apply a fix for TWIG modifications in VQMod 2.6.6</info>
+
+<!-- fix vqmod 2.6.6 twig  -->
+	<file name="system/library/template/twig.php">
+		<operation>
+			<search position="before" trim="true"><![CDATA[
+				$twig = new
+			]]></search>
+			<add trim="true"><![CDATA[
+				$file = \VQMod::modCheck($file);
+				$file = str_replace(realpath(DIR_APPLICATION . '../'), '', $file);
+				$file = trim(str_replace('\\', '/', $file), '/ ');
+			]]></add>
+		</operation>
+	</file>
+
+</modification>
