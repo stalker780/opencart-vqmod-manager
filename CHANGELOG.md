@@ -4,6 +4,7 @@ v.1.0 (2021-02-01)
 - Initial version with modifications manger and editor
 
 ///////////////////////////////////////////////////////////////
+
 v.1.1 (2021-07-20)
 - Added VQMod Installer
 - Added xml files support inside extensions zip
