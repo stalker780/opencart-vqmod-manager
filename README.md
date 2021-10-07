@@ -25,6 +25,7 @@ Extension features:
 - modification dumps
 - cache clear
 - uses CodeMirror editor for XML syntax highlight
+- XML structure validation
 
 Installation steps:
 1. Open Extensions->Installer
