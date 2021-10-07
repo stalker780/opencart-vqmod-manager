@@ -34,3 +34,5 @@ Installation steps:
 7. Ready to use
 
 Extension is free for use.
+
+Extension will be updated as OC4 evolves. Since it is still beta and may have significant core changes before release.
