@@ -10,6 +10,7 @@ Extension was developed with plug and play in mind. It does not require you to d
 All this can be done inside Module settings using admin interface.
 
 VQMod GitHub: https://github.com/vqmod/vqmod
+
 VQMod Wiki: https://github.com/vqmod/vqmod/wiki/Examples
 
 Demo website will be available soon.
