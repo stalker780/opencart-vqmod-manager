@@ -9,3 +9,4 @@ v.1.1 (2021-07-20)
 - Added xml files support inside extensions zip
 - Added cache and xml dump downloads
 - Added ajax logs and modified files refresh
+- Added modification filter by filename/name/author/contents/status
