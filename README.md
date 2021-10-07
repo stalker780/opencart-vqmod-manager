@@ -1,6 +1,4 @@
-# opencart-vqmod-manager
-OpenCart 4 VQMod Manager
-
+# OpenCart 4 VQMod Manager
 
 New long awaited OpenCart 4.0 is coming without familiar OCMod embedded.
 It will use Event system instead.
