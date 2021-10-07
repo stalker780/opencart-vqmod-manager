@@ -28,8 +28,9 @@ Extension features:
 - XML structure validation
 
 Installation steps:
+1. Rename downloaded file to clicker_vqmod_manager.ocmod.zip
 1. Open Extensions->Installer
-2. Upload VQModManager.ocmod.zip
+2. Upload clicker_vqmod_manager.ocmod.zip
 3. Find uploaded extension in a list and click Install
 4. Open Extensions->Extensions->Modules
 5. Find VQModManager module and click install
