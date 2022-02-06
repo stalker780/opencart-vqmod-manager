@@ -15,7 +15,7 @@ VQMod Wiki: https://github.com/vqmod/vqmod/wiki/Examples
 
 Demo website will be available soon.
 
-Extension features:
+## Extension features:
 - includes VQMod installer right from your admin panel
 - allows to manage/edit/create VQMod XML files
 - filter VQMods by filename/name/author/contents/status
@@ -25,15 +25,17 @@ Extension features:
 - modification dumps
 - cache clear
 - uses CodeMirror editor for XML syntax highlight
+- XML structure validation
 
-Installation steps:
-1. Open Extensions->Installer
-2. Upload VQModManager.ocmod.zip
-3. Find uploaded extension in a list and click Install
-4. Open Extensions->Extensions->Modules
-5. Find VQModManager module and click install
-6. Now open module and follow VQMod installation steps
-7. Ready to use
+## Installation steps:
+1. Rename downloaded file to clicker_vqmod_manager.ocmod.zip
+2. Open Extensions->Installer
+3. Upload clicker_vqmod_manager.ocmod.zip
+4. Find uploaded extension in a list and click Install
+5. Open Extensions->Extensions->Modules
+6. Find VQModManager module and click install
+7. Now open module and follow VQMod installation steps
+8. Ready to use
 
 Extension is free for use.
 
