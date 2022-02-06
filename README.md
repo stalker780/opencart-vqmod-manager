@@ -27,7 +27,7 @@ Demo website will be available soon.
 - uses CodeMirror editor for XML syntax highlight
 - XML structure validation
 
-## OCMOD structure with embedded VQMod XML files:
+## OCMod structure with embedded VQMod XML files:
 ```
 my_extension.ocmod.zip
 |-admin/
