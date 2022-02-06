@@ -10,3 +10,9 @@ v.1.1 (2021-07-20)
 - Added cache and xml dump downloads
 - Added ajax logs and modified files refresh
 - Added modification filter by filename/name/author/contents/status
+
+///////////////////////////////////////////////////////////////
+v.4.0.0.1 (2022-02-07)
+- Minor form changes
+- Removed "upload" folder according to new ocmod.zip structure
+- New version numbering

@@ -77,16 +77,18 @@
 		</operation>
 	</file>
 
-<!-- Disable slow banner in extensions page. It takes too long to load -->
-	<!-- <file name="admin/controller/marketplace/promotion.php"> -->
-		<!-- <operation> -->
-			<!-- <search position="after" trim="true"><![CDATA[ -->
-				<!-- function index() -->
-			<!-- ]]></search> -->
-			<!-- <add trim="true"><![CDATA[ -->
-				<!-- return ''; -->
-			<!-- ]]></add> -->
-		<!-- </operation> -->
-	<!-- </file> -->
+<!-- Disable banner in extensions page. It takes too long to load -->
+<!--
+	<file name="admin/controller/marketplace/promotion.php">
+		<operation>
+			<search position="after" trim="true"><![CDATA[
+				function index()
+			]]></search>
+			<add trim="true"><![CDATA[
+				return '';
+			]]></add>
+		</operation>
+	</file>
+-->
 
 </modification>

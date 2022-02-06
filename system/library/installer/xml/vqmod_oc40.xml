@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <modification>
 	<id>VQMod TWIG fix OC 4.0</id>
-	<version>1.0.0</version>
+	<version>4.0.0.1</version>
 	<vqmver required="true">2.6.6</vqmver>
 	<author>Cl!cker</author>
 	<link>https://opencart.click</link>
