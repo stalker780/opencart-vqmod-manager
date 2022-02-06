@@ -28,12 +28,14 @@ Demo website will be available soon.
 - XML structure validation
 
 ## OCMOD structure with embedded VQMod XML files:
+```
 my_extension.ocmod.zip
 |-admin/
 |-catalog/
 |-system/
 |-vqmod/xml/my_extension.xml
 |-install.xml
+```
 
 ## Installation steps:
 1. Rename downloaded file to clicker_vqmod_manager.ocmod.zip
