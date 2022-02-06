@@ -15,4 +15,4 @@
 ## v.4.0.0.1 (2022-02-07)
 - Minor form changes
 - Removed "upload" folder according to new ocmod.zip structure
-- New version numbering
+- New version numeration
