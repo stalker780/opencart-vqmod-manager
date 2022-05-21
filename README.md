@@ -6,7 +6,7 @@ It will use Event system instead.
 This extension is a solutions for those who still wish to create own extensions modifications without editing core files.
 It allows to include VQMod XML files inside OC4 extension zip files and install them on extension installation.
 
-Extension was developed with plug and play in mind. It does not require you to download VQMod, upload and install it manually. 
+Extension was developed with plug and play in mind. It does not require you to download VQMod, upload and install it manually.
 All this can be done inside Module settings using admin interface.
 
 VQMod GitHub: https://github.com/vqmod/vqmod
@@ -29,12 +29,20 @@ Demo website will be available soon.
 
 ## OCMod structure with embedded VQMod XML files:
 ```
-my_extension.ocmod.zip
-|-admin/
-|-catalog/
-|-system/
-|-vqmod/xml/my_extension.xml
-|-install.xml
+my_extension_package.ocmod.zip
+|-my_extension_code1/
+|-my_extension_code1/admin/
+|-my_extension_code1/catalog/
+|-my_extension_code1/system/
+|-my_extension_code1/vqmod/xml/my_vqmod_extension.xml
+|-my_extension_code1/install.json
+
+|-my_extension_code2/
+|-my_extension_code2/admin/
+|-my_extension_code2/catalog/
+|-my_extension_code2/system/
+|-my_extension_code2/vqmod/xml/my_vqmod_extension.xml
+|-my_extension_code2/install.json
 ```
 
 ## Installation steps:

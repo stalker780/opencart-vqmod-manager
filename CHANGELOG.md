@@ -16,3 +16,8 @@
 - Minor form changes
 - Removed "upload" folder according to new ocmod.zip structure
 - New version numeration
+
+
+## v.4.0.0.2 (2022-05-21)
+- Minor form changes
+- Extension folder structure changed according to new ocmod.zip structure
