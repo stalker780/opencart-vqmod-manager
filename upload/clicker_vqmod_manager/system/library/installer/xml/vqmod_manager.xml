@@ -37,7 +37,7 @@
 				// vqmod > vqmod
 				if (substr($destination, 0, 10) == 'vqmod/xml/') {
 					$path = $destination;
-					$base = substr(DIR_OPENCART, 0, -10);
+					$base = DIR_OPENCART;
 				}
 			]]></add>
 		</operation>
@@ -48,9 +48,21 @@
 			]]></search>
 			<add trim="true"><![CDATA[
 				// vqmod > vqmod
-				if (substr($destination, $name_folder_length, $name_folder_length + 10) == 'vqmod/xml/') {
-					$path = $destination;
-					$base = substr(DIR_OPENCART, 0, -10);
+				if (strpos($destination, $extension_install_info['code'] . '/vqmod/xml/') === 0 ) {
+					$path = substr($destination, $name_folder_length);
+					$base = DIR_OPENCART;
+				}
+			]]></add>
+		</operation>
+
+		<operation>
+			<search position="before" trim="true"><![CDATA[
+				if (substr($result['path'], 0, 6) == 'image/') {
+			]]></search>
+			<add trim="true"><![CDATA[
+				// Remove vqmod
+				if (strpos($result['path'], 'vqmod/xml/') === 0) {
+					$path = DIR_OPENCART . $result['path'];
 				}
 			]]></add>
 		</operation>
