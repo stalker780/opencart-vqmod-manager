@@ -676,8 +676,8 @@ function form_onsubmit() {
 
   var cursor = codemirror_editor.getCursor();
   codemirror_editor.getDoc().setValue($("textarea[name=xml]").val());
-  codemirror_editor.focus();
   codemirror_editor.setCursor({line: cursor.line, ch: cursor.ch});
+  codemirror_editor.focus();
 }
 
 function get_log(op) {

@@ -21,3 +21,8 @@
 ## v.4.0.0.2 (2022-05-21)
 - Minor form changes
 - Extension folder structure changed according to new ocmod.zip structure
+
+
+## v.4.0.0.3 (2022-05-24)
+- Fix editor blinking on save
+- VQMod pathReplace.php now can automatically detect renamed admin folder. thanks qphoria
