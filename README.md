@@ -3,7 +3,7 @@
 New long awaited OpenCart 4.0 is coming without familiar OCMod embedded.
 It will use Event system instead.
 
-This extension is a solutions for those who still wish to create own extensions modifications without editing core files.
+This extension is a solution for those who still wish to create own extensions modifications without editing core files.
 It allows to include VQMod XML files inside OC4 extension zip files and install them on extension installation.
 
 Extension was developed with plug and play in mind. It does not require you to download VQMod, upload and install it manually.
@@ -56,5 +56,3 @@ my_extension_package.ocmod.zip
 8. Ready to use
 
 Extension is free for use.
-
-Extension will be updated as OC4 evolves. Since it is still beta and may have significant core changes before release.
