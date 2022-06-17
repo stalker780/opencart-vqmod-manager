@@ -3,7 +3,7 @@ namespace Opencart\Admin\Model\Extension\ClickerVqmodManager\Module;
 class Vqmod extends \Opencart\System\Engine\Model {
 	public $vqmod_dir = 'vqmod';
 	public $vqmod_url = 'vqmod';
-	public $vqmod_log_separator = '----------------------------------------------------------------------';
+	public $vqmod_log_separator;
 
 	public function __construct($registry) {
 		parent::__construct($registry);
