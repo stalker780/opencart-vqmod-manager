@@ -42,7 +42,7 @@
 			]]></add>
 		</operation>
 
-		<operation>
+		<!--<operation>
 			<search position="before" trim="true"><![CDATA[
 				if (substr($destination, $name_folder_length, $name_folder_length + 6) == 'image/')
 			]]></search>
@@ -53,7 +53,7 @@
 					$base = DIR_OPENCART;
 				}
 			]]></add>
-		</operation>
+		</operation>-->
 
 		<operation>
 			<search position="before" trim="true"><![CDATA[
