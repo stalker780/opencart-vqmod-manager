@@ -29,20 +29,12 @@ Demo website will be available soon.
 
 ## OCMod structure with embedded VQMod XML files:
 ```
-my_extension_package.ocmod.zip
-|-my_extension_code1/
-|-my_extension_code1/admin/
-|-my_extension_code1/catalog/
-|-my_extension_code1/system/
-|-my_extension_code1/vqmod/xml/my_vqmod_extension.xml
-|-my_extension_code1/install.json
-
-|-my_extension_code2/
-|-my_extension_code2/admin/
-|-my_extension_code2/catalog/
-|-my_extension_code2/system/
-|-my_extension_code2/vqmod/xml/my_vqmod_extension.xml
-|-my_extension_code2/install.json
+my_extension_code.ocmod.zip
+|-/admin/
+|-/catalog/
+|-/system/
+|-/vqmod/xml/my_vqmod_extension.xml
+|-/install.json
 ```
 
 ## Installation steps:
