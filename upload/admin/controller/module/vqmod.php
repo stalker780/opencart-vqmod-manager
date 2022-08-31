@@ -1,5 +1,6 @@
 <?php
 namespace Opencart\Admin\Controller\Extension\ClickerVqmodManager\Module;
+use \Opencart\System\Helper as Helper;
 class Vqmod extends \Opencart\System\Engine\Controller {
 	private $ex_version = '';
 	private $vqmod_version = '';
@@ -8,6 +9,7 @@ class Vqmod extends \Opencart\System\Engine\Controller {
 	private $vqmod_log_dir = '';
 	private $vqmod_logging = 0;
 	private $vqmod_url = '';
+	private $admin_folder = '';
 
 	private $error = [];
 
@@ -18,6 +20,7 @@ class Vqmod extends \Opencart\System\Engine\Controller {
 
 		$this->vqmod_dir = $this->model_extension_clicker_vqmod_manager_module_vqmod->getVQModDir();
 		$this->vqmod_url = $this->model_extension_clicker_vqmod_manager_module_vqmod->getVQModUrl();
+		$this->admin_folder = $this->model_extension_clicker_vqmod_manager_module_vqmod->getAdminFolder();
 
 		$vqmod_vars = class_exists('VQMod') ? get_class_vars('VQMod') : [];
 		$this->vqmod_installed = !empty($vqmod_vars['_vqversion']) ? $vqmod_vars['_vqversion'] : 0;
@@ -356,7 +359,7 @@ class Vqmod extends \Opencart\System\Engine\Controller {
 
 			$pathinfo = pathinfo($this->request->files['file']['name']);
 
-			if ((utf8_strlen($filename) < 1) || (utf8_strlen($filename) > 128)) {
+			if ((Helper\Utf8\strlen($filename) < 1) || (Helper\Utf8\strlen($filename) > 128)) {
 				$json['error'] = $this->language->get('error_filename');
 			}
 
@@ -885,8 +888,14 @@ class Vqmod extends \Opencart\System\Engine\Controller {
 
 	public function vqmod_installer() {
 		$file = $this->vqmod_dir . "install/index.php";
+
 		if (is_file($file)) {
+			if (empty($_POST['admin_name']) && !empty($this->admin_folder)) {
+				$_POST['admin_name'] = $this->admin_folder;
+			}
+
 			require_once($this->vqmod_dir . "install/index.php");
+
 			die();
 		} else {
 			die('Installer not found: ' . $file);

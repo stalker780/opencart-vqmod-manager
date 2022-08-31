@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <modification>
 	<id>VQMod Manager OC 4.0</id>
-	<version>4.0.0.3</version>
-	<vqmver required="true">2.6.6</vqmver>
+	<version>4.0.1.1</version>
+	<vqmver required="true">2.6.7</vqmver>
 	<author>Cl!cker</author>
 	<link>https://opencart.click</link>
 	<info>VQMod Manager extension</info>

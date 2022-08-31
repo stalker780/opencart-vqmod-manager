@@ -3,6 +3,7 @@ namespace Opencart\Admin\Model\Extension\ClickerVqmodManager\Module;
 class Vqmod extends \Opencart\System\Engine\Model {
 	public $vqmod_dir = 'vqmod';
 	public $vqmod_url = 'vqmod';
+	public $admin_folder = 'admin';
 	public $vqmod_log_separator = '----------------------------------------------------------------------';
 
 	public function __construct($registry) {
@@ -13,6 +14,7 @@ class Vqmod extends \Opencart\System\Engine\Model {
 		// Get default VQMod dir
 		$this->vqmod_url = HTTP_CATALOG . $this->vqmod_url . '/';
 		$this->vqmod_dir = DIR_OPENCART . $this->vqmod_dir . '/';
+		$this->admin_folder = trim(basename(DIR_APPLICATION), '/ ');
 
 		// Get installed VQMod dir
 		$classes = get_declared_classes();
@@ -32,6 +34,10 @@ class Vqmod extends \Opencart\System\Engine\Model {
 
 	public function getVQModUrl() {
 		return $this->vqmod_url;
+	}
+
+	public function getAdminFolder() {
+		return $this->admin_folder;
 	}
 
 	public function addVQMod($data) {

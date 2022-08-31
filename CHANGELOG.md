@@ -26,3 +26,8 @@
 ## v.4.0.0.3 (2022-05-24)
 - Fix editor blinking on save
 - VQMod pathReplace.php now can automatically detect renamed admin folder. thanks qphoria
+
+
+## v.4.0.1.1 (2022-08-31)
+- OC 4.0.1.0 extension structure compatibility
+- Update VQMod 2.6.7
