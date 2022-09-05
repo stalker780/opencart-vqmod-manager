@@ -107,7 +107,7 @@ class Vqmod extends \Opencart\System\Engine\Controller {
 
 			$url = $this->buildUrl();
 
-			$this->response->redirect($this->url->link('extension/clicker_vqmod_manager/module/vqmod|edit', 'vqmod_id=' . $vqmod_id . '&user_token=' . $this->session->data['user_token'] . $url, true));
+			$this->response->redirect($this->url->link('extension/clicker_vqmod_manager/module/vqmod.edit', 'vqmod_id=' . $vqmod_id . '&user_token=' . $this->session->data['user_token'] . $url, true));
 		}
 
 		$this->getForm();
@@ -247,7 +247,7 @@ class Vqmod extends \Opencart\System\Engine\Controller {
 
 			foreach ($mods as $vqmod_id) {
 				if (isset($vqmods[$vqmod_id])) {
-					$vqmods[$vqmod_id]['edit'] = $this->url->link('extension/clicker_vqmod_manager/module/vqmod|edit', 'user_token=' . $this->session->data['user_token'] . '&vqmod_id=' . $vqmod_id, true);
+					$vqmods[$vqmod_id]['edit'] = $this->url->link('extension/clicker_vqmod_manager/module/vqmod.edit', 'user_token=' . $this->session->data['user_token'] . '&vqmod_id=' . $vqmod_id, true);
 
 					$modification['vqmods'][$vqmod_id] = $vqmods[$vqmod_id];
 				}
@@ -277,7 +277,7 @@ class Vqmod extends \Opencart\System\Engine\Controller {
 		// $file = DIR_STORAGE . 'vendor/clicker_vqmod_manager/vqmod-opencart.zip';
 
 		if (!empty($file) && is_file($file)) {
-			$data['vqmod_vendor'] = $this->url->link('extension/clicker_vqmod_manager/module/vqmod|vendor', 'user_token=' . $this->session->data['user_token'], true);
+			$data['vqmod_vendor'] = $this->url->link('extension/clicker_vqmod_manager/module/vqmod.vendor', 'user_token=' . $this->session->data['user_token'], true);
 
 			$zip = new \ZipArchive();
 
@@ -580,20 +580,20 @@ class Vqmod extends \Opencart\System\Engine\Controller {
 			'href' => $this->url->link('extension/clicker_vqmod_manager/module/vqmod', 'user_token=' . $this->session->data['user_token'] . $url, true)
 		];
 
-		$data['add'] = $this->url->link('extension/clicker_vqmod_manager/module/vqmod|add', 'user_token=' . $this->session->data['user_token'] . $url, true);
-		$data['delete'] = $this->url->link('extension/clicker_vqmod_manager/module/vqmod|delete', 'user_token=' . $this->session->data['user_token'] . $url, true);
-		$data['copy'] = $this->url->link('extension/clicker_vqmod_manager/module/vqmod|copy', 'user_token=' . $this->session->data['user_token'] . $url, true);
-		$data['enable'] = $this->url->link('extension/clicker_vqmod_manager/module/vqmod|enable', 'user_token=' . $this->session->data['user_token'] . $url, true);
-		$data['disable'] = $this->url->link('extension/clicker_vqmod_manager/module/vqmod|disable', 'user_token=' . $this->session->data['user_token'] . $url, true);
+		$data['add'] = $this->url->link('extension/clicker_vqmod_manager/module/vqmod.add', 'user_token=' . $this->session->data['user_token'] . $url, true);
+		$data['delete'] = $this->url->link('extension/clicker_vqmod_manager/module/vqmod.delete', 'user_token=' . $this->session->data['user_token'] . $url, true);
+		$data['copy'] = $this->url->link('extension/clicker_vqmod_manager/module/vqmod.copy', 'user_token=' . $this->session->data['user_token'] . $url, true);
+		$data['enable'] = $this->url->link('extension/clicker_vqmod_manager/module/vqmod.enable', 'user_token=' . $this->session->data['user_token'] . $url, true);
+		$data['disable'] = $this->url->link('extension/clicker_vqmod_manager/module/vqmod.disable', 'user_token=' . $this->session->data['user_token'] . $url, true);
 
-		$data['clear_cache'] = $this->url->link('extension/clicker_vqmod_manager/module/vqmod|clear_cache', 'user_token=' . $this->session->data['user_token'] . $url, true);
-		$data['get_log'] = $this->url->link('extension/clicker_vqmod_manager/module/vqmod|get_log', 'user_token=' . $this->session->data['user_token'], true);
-		$data['clear_log'] = $this->url->link('extension/clicker_vqmod_manager/module/vqmod|clear_log', 'user_token=' . $this->session->data['user_token'], true);
-		$data['get_modifications'] = $this->url->link('extension/clicker_vqmod_manager/module/vqmod|get_modifications', 'user_token=' . $this->session->data['user_token'], true);
-		$data['upload'] = $this->url->link('extension/clicker_vqmod_manager/module/vqmod|upload', 'user_token=' . $this->session->data['user_token'], true);
-		$data['download_xml'] = $this->url->link('extension/clicker_vqmod_manager/module/vqmod|download_xml', 'user_token=' . $this->session->data['user_token'], true);
-		$data['download_vqcache'] = $this->url->link('extension/clicker_vqmod_manager/module/vqmod|download_vqcache', 'user_token=' . $this->session->data['user_token'], true);
-		$data['download_log'] = $this->url->link('extension/clicker_vqmod_manager/module/vqmod|download_log', 'user_token=' . $this->session->data['user_token'], true);
+		$data['clear_cache'] = $this->url->link('extension/clicker_vqmod_manager/module/vqmod.clear_cache', 'user_token=' . $this->session->data['user_token'] . $url, true);
+		$data['get_log'] = $this->url->link('extension/clicker_vqmod_manager/module/vqmod.get_log', 'user_token=' . $this->session->data['user_token'], true);
+		$data['clear_log'] = $this->url->link('extension/clicker_vqmod_manager/module/vqmod.clear_log', 'user_token=' . $this->session->data['user_token'], true);
+		$data['get_modifications'] = $this->url->link('extension/clicker_vqmod_manager/module/vqmod.get_modifications', 'user_token=' . $this->session->data['user_token'], true);
+		$data['upload'] = $this->url->link('extension/clicker_vqmod_manager/module/vqmod.upload', 'user_token=' . $this->session->data['user_token'], true);
+		$data['download_xml'] = $this->url->link('extension/clicker_vqmod_manager/module/vqmod.download_xml', 'user_token=' . $this->session->data['user_token'], true);
+		$data['download_vqcache'] = $this->url->link('extension/clicker_vqmod_manager/module/vqmod.download_vqcache', 'user_token=' . $this->session->data['user_token'], true);
+		$data['download_log'] = $this->url->link('extension/clicker_vqmod_manager/module/vqmod.download_log', 'user_token=' . $this->session->data['user_token'], true);
 
 		$data['user_token'] = $this->session->data['user_token'];
 
@@ -635,11 +635,11 @@ class Vqmod extends \Opencart\System\Engine\Controller {
 				'date_modified' => strpos($result['date_modified'], '0000-00-00') === false ? date('Y-m-d H:i:s', strtotime($result['date_modified'])) : '',
 				'status'        => (int)$result['status'] ? $this->language->get('text_enabled') : $this->language->get('text_disabled'),
 				'enabled'       => (int)$result['status'],
-				'edit'          => $this->url->link('extension/clicker_vqmod_manager/module/vqmod|edit', 'user_token=' . $this->session->data['user_token'] . '&vqmod_id=' . $result['vqmod_id'] . $url, true),
-				'delete'        => $this->url->link('extension/clicker_vqmod_manager/module/vqmod|delete', 'user_token=' . $this->session->data['user_token'] . '&vqmod_id=' . $result['vqmod_id'] . $url, true),
-				'enable'        => $this->url->link('extension/clicker_vqmod_manager/module/vqmod|enable', 'user_token=' . $this->session->data['user_token'] . '&vqmod_id=' . $result['vqmod_id'] . $url, true),
-				'disable'       => $this->url->link('extension/clicker_vqmod_manager/module/vqmod|disable', 'user_token=' . $this->session->data['user_token'] . '&vqmod_id=' . $result['vqmod_id'] . $url, true),
-				'download'      => $this->url->link('extension/clicker_vqmod_manager/module/vqmod|download_xml', 'user_token=' . $this->session->data['user_token'] . '&vqmod_id=' . $result['vqmod_id'], true),
+				'edit'          => $this->url->link('extension/clicker_vqmod_manager/module/vqmod.edit', 'user_token=' . $this->session->data['user_token'] . '&vqmod_id=' . $result['vqmod_id'] . $url, true),
+				'delete'        => $this->url->link('extension/clicker_vqmod_manager/module/vqmod.delete', 'user_token=' . $this->session->data['user_token'] . '&vqmod_id=' . $result['vqmod_id'] . $url, true),
+				'enable'        => $this->url->link('extension/clicker_vqmod_manager/module/vqmod.enable', 'user_token=' . $this->session->data['user_token'] . '&vqmod_id=' . $result['vqmod_id'] . $url, true),
+				'disable'       => $this->url->link('extension/clicker_vqmod_manager/module/vqmod.disable', 'user_token=' . $this->session->data['user_token'] . '&vqmod_id=' . $result['vqmod_id'] . $url, true),
+				'download'      => $this->url->link('extension/clicker_vqmod_manager/module/vqmod.download_xml', 'user_token=' . $this->session->data['user_token'] . '&vqmod_id=' . $result['vqmod_id'], true),
 				'author'        => $result['author'],
 				'version'       => $result['version'],
 				'link'          => !empty($result['xml_obj']->link) ? trim((string)$result['xml_obj']->link) : '',
@@ -650,7 +650,7 @@ class Vqmod extends \Opencart\System\Engine\Controller {
 
 		$data['vqmod_version'] = $this->vqmod_version;
 		//$data['vqmod_installer'] = $this->vqmod_url . 'install/index.php';
-		$data['vqmod_installer'] = $this->url->link('extension/clicker_vqmod_manager/module/vqmod|vqmod_installer', 'user_token=' . $this->session->data['user_token'], true);
+		$data['vqmod_installer'] = $this->url->link('extension/clicker_vqmod_manager/module/vqmod.vqmod_installer', 'user_token=' . $this->session->data['user_token'], true);
 		$data['vqmod_logging'] = $this->vqmod_logging;
 		$query = $this->db->query("SELECT VERSION() AS `version`");
 		$data['mysql_version'] = !empty($query->row['version']) ? $query->row['version'] : '';
@@ -658,7 +658,7 @@ class Vqmod extends \Opencart\System\Engine\Controller {
 		$data['vqmod_path'] = is_dir($this->vqmod_dir) ? $this->vqmod_dir : '';
 		$data['vqmod_vendor'] = '';
 		if ($files = glob(DIR_EXTENSION . 'clicker_vqmod_manager/system/library/installer/vqmod*opencart.zip')) {
-			$data['vqmod_vendor'] = $this->url->link('extension/clicker_vqmod_manager/module/vqmod|vendor', 'user_token=' . $this->session->data['user_token'], true);
+			$data['vqmod_vendor'] = $this->url->link('extension/clicker_vqmod_manager/module/vqmod.vendor', 'user_token=' . $this->session->data['user_token'], true);
 			$data['vqmod_vendor_file'] = basename(end($files));
 		}
 
@@ -774,15 +774,15 @@ class Vqmod extends \Opencart\System\Engine\Controller {
 		];
 
 		if (!isset($this->request->get['vqmod_id'])) {
-			$data['action'] = $this->url->link('extension/clicker_vqmod_manager/module/vqmod|add', 'user_token=' . $this->session->data['user_token'] . $url, true);
+			$data['action'] = $this->url->link('extension/clicker_vqmod_manager/module/vqmod.add', 'user_token=' . $this->session->data['user_token'] . $url, true);
 		} else {
-			$data['action'] = $this->url->link('extension/clicker_vqmod_manager/module/vqmod|edit', 'vqmod_id=' . $this->request->get['vqmod_id'] . '&user_token=' . $this->session->data['user_token'] . $url, true);
-			$data['edit_refresh'] = $this->url->link('extension/clicker_vqmod_manager/module/vqmod|edit', 'refresh=1&user_token=' . $this->session->data['user_token'] . $url, true);
+			$data['action'] = $this->url->link('extension/clicker_vqmod_manager/module/vqmod.edit', 'vqmod_id=' . $this->request->get['vqmod_id'] . '&user_token=' . $this->session->data['user_token'] . $url, true);
+			$data['edit_refresh'] = $this->url->link('extension/clicker_vqmod_manager/module/vqmod.edit', 'refresh=1&user_token=' . $this->session->data['user_token'] . $url, true);
 		}
 
-		$data['get_log'] = $this->url->link('extension/clicker_vqmod_manager/module/vqmod|get_log', 'user_token=' . $this->session->data['user_token'], true);
-		$data['clear_log'] = $this->url->link('extension/clicker_vqmod_manager/module/vqmod|clear_log', 'user_token=' . $this->session->data['user_token'], true);
-		$data['get_modifications'] = $this->url->link('extension/clicker_vqmod_manager/module/vqmod|get_modifications', 'user_token=' . $this->session->data['user_token'], true);
+		$data['get_log'] = $this->url->link('extension/clicker_vqmod_manager/module/vqmod.get_log', 'user_token=' . $this->session->data['user_token'], true);
+		$data['clear_log'] = $this->url->link('extension/clicker_vqmod_manager/module/vqmod.clear_log', 'user_token=' . $this->session->data['user_token'], true);
+		$data['get_modifications'] = $this->url->link('extension/clicker_vqmod_manager/module/vqmod.get_modifications', 'user_token=' . $this->session->data['user_token'], true);
 
 		$data['cancel'] = $this->url->link('extension/clicker_vqmod_manager/module/vqmod', 'user_token=' . $this->session->data['user_token'] . $url, true);
 
@@ -906,7 +906,7 @@ class Vqmod extends \Opencart\System\Engine\Controller {
 		'clicker_vqmod_manager_ac_common_column_left_a' => [
 			'description' => 'VQMod Manager in left column',
 			'trigger' => 'admin/controller/common/footer/after',
-			'action' => 'extension/clicker_vqmod_manager/module/vqmod|event_column_left_after'
+			'action' => 'extension/clicker_vqmod_manager/module/vqmod.event_column_left_after'
 		],
 	];
 	protected $events_catalog = [];

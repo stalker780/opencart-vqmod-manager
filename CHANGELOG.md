@@ -31,3 +31,7 @@
 ## v.4.0.1.1 (2022-08-31)
 - OC 4.0.1.0 extension structure compatibility
 - Update VQMod 2.6.7
+
+
+## v.4.0.1.2 (2022-09-05)
+- update latest OC master links `|` to `.`
