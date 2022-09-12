@@ -33,5 +33,5 @@
 - Update VQMod 2.6.7
 
 
-## v.4.0.1.2 (2022-09-05)
+## v.4.0.2.0 (2022-09-05)
 - update latest OC master links `|` to `.`
