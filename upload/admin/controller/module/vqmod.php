@@ -1,6 +1,5 @@
 <?php
 namespace Opencart\Admin\Controller\Extension\ClickerVqmodManager\Module;
-use \Opencart\System\Helper as Helper;
 class Vqmod extends \Opencart\System\Engine\Controller {
 	private $ex_version = '';
 	private $vqmod_version = '';
@@ -359,7 +358,7 @@ class Vqmod extends \Opencart\System\Engine\Controller {
 
 			$pathinfo = pathinfo($this->request->files['file']['name']);
 
-			if ((Helper\Utf8\strlen($filename) < 1) || (Helper\Utf8\strlen($filename) > 128)) {
+			if ((oc_strlen($filename) < 1) || (oc_strlen($filename) > 128)) {
 				$json['error'] = $this->language->get('error_filename');
 			}
 
