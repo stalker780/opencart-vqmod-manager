@@ -35,3 +35,4 @@
 
 ## v.4.0.2.0 (2022-09-05)
 - update latest OC master links `|` to `.`
+- Update VQMod 2.6.8, PHP 8.2 support
