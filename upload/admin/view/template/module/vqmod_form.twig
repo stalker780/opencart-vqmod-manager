@@ -105,7 +105,7 @@
                 <div class="col">CTRL+S - {{text_save }}</div>
                 <div class="col">CTRL+Enter/Esc - {{text_fullscreen }}/{{ text_off }}</div>
               </div>
-              <textarea name="xml" placeholder="{{ entry_xml }}" id="input-xml">{% autoescape false %}{{ xml|raw }}{% endautoescape %}</textarea>
+              <textarea name="xml" placeholder="{{ entry_xml }}" id="input-xml" autocomplete="off">{% autoescape false %}{{ xml|raw }}{% endautoescape %}</textarea>
             </div>
           </div>
         </form>
