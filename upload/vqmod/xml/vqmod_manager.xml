@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <modification>
 	<id>VQMod Manager OC 4.0</id>
-	<version>4.0.2.0</version>
+	<version>4.0.2.2</version>
 	<vqmver required="true">2.6.7</vqmver>
 	<author>Cl!cker</author>
 	<link>https://opencart.click</link>
 	<info>VQMod Manager extension</info>
 
-<!-- add VQMod Manager to admin left menu  -->
+<!-- add VQMod Manager to admin left menu -->
 	<file name="admin/controller/common/column_left.php">
 		<operation>
 			<search position="before" trim="true"><![CDATA[
@@ -27,7 +27,6 @@
 	</file>
 
 	<file name="admin/controller/marketplace/installer.php">
-
 <!-- allow VQMod XML files 'package_name/extension_code/vqmod/xml/sample.xml' inside ocmod.zip -->
 		<operation>
 			<search position="before" trim="true"><![CDATA[
@@ -35,35 +34,13 @@
 			]]></search>
 			<add trim="true"><![CDATA[
 				// vqmod > vqmod
+				if (substr($destination, 0, 6) == 'vqmod/') {
+					continue;
+				}
 				if (substr($destination, 0, 10) == 'vqmod/xml/') {
-					$path = $destination;
-					$base = DIR_OPENCART;
+					continue;
 				}
-			]]></add>
-		</operation>
 
-		<!--<operation>
-			<search position="before" trim="true"><![CDATA[
-				if (substr($destination, $name_folder_length, $name_folder_length + 6) == 'image/')
-			]]></search>
-			<add trim="true"><![CDATA[
-				// vqmod > vqmod
-				if (strpos($destination, $extension_install_info['code'] . '/vqmod/xml/') === 0 ) {
-					$path = substr($destination, $name_folder_length);
-					$base = DIR_OPENCART;
-				}
-			]]></add>
-		</operation>-->
-
-		<operation>
-			<search position="before" trim="true"><![CDATA[
-				if (substr($result['path'], 0, 6) == 'image/') {
-			]]></search>
-			<add trim="true"><![CDATA[
-				// Remove vqmod
-				if (strpos($result['path'], 'vqmod/xml/') === 0) {
-					$path = DIR_OPENCART . $result['path'];
-				}
 			]]></add>
 		</operation>
 	</file>

@@ -83,11 +83,11 @@
             </div>
           </div>
           <div class="row mb-3">
-            <div class="col-md-4 col-xl-2 sticky-top">
+            <div class="col-md-4 col-xl-2">
               <div class="row">
                 <label class="col-sm-12 col-form-label" for="input-xml">{{ entry_xml }}</label>
               </div>
-              <div class="row sticky-top">
+              <div class="row sticky-top" style="max-height: 100vh; overflow-y: auto;">
                 <div class="col-sm-12 xml-outline"></div>
                 <div class="col-sm-12 xml-error"></div>
                 {% if error_xml_info %}
@@ -397,13 +397,13 @@ $(document).ready(function() {
 
 var timeout_resize = null;
 $(window).resize(function() {
-  clearTimeout(timeout_resize);
+  /*clearTimeout(timeout_resize);
 
   timeout_resize = setTimeout(function() {
     $('div.xml-outline')
       .css('max-height', window.innerHeight-50+'px')
       .css('width', $('div.xml-outline').parent().width()+'px');
-  }, 600);
+  }, 600);*/
 });
 
 $(window).scroll(function() {

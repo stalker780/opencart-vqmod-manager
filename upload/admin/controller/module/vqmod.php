@@ -4,6 +4,7 @@ class Vqmod extends \Opencart\System\Engine\Controller {
 	private $ex_version = '';
 	private $vqmod_version = '';
 	private $vqmod_installed = 0;
+	private $vqmod_dirs = [];
 	private $vqmod_dir = '';
 	private $vqmod_log_dir = '';
 	private $vqmod_logging = 0;
@@ -17,6 +18,7 @@ class Vqmod extends \Opencart\System\Engine\Controller {
 
 		$this->load->model('extension/clicker_vqmod_manager/module/vqmod');
 
+		$this->vqmod_dirs = $this->model_extension_clicker_vqmod_manager_module_vqmod->getVQModDirs();
 		$this->vqmod_dir = $this->model_extension_clicker_vqmod_manager_module_vqmod->getVQModDir();
 		$this->vqmod_url = $this->model_extension_clicker_vqmod_manager_module_vqmod->getVQModUrl();
 		$this->admin_folder = $this->model_extension_clicker_vqmod_manager_module_vqmod->getAdminFolder();
@@ -470,21 +472,28 @@ class Vqmod extends \Opencart\System\Engine\Controller {
 			readfile($file);
 
 		} else {
-
-			$files = glob($this->vqmod_dir . 'xml/*', GLOB_NOSORT);
-
 			$filename = 'vqxml';
 
-			// $temp = @tempnam('tmp', 'zip');
 			$temp = @tempnam(DIR_CACHE, 'zip');
 
 			$zip = new \ZipArchive();
 			$zip->open($temp, \ZipArchive::OVERWRITE);
 
-			if ($files) {
-				foreach ($files as $file) {
-					if (is_file($file)) {
-						$zip->addFile($file, basename($file));
+			$dir_opencart = str_replace('\\', '/', DIR_OPENCART);
+
+			foreach ($this->vqmod_dirs as $vqmod_dir) {
+				$files = glob($vqmod_dir . '*', GLOB_NOSORT);
+
+				$this->log->write($files);
+
+				if ($files) {
+					foreach ($files as $file) {
+						$dirname = str_replace('\\', '/', pathinfo($file, PATHINFO_DIRNAME));
+						$dirname = str_replace($dir_opencart, '', $dirname) . '/';
+
+						if (is_file($file)) {
+							$zip->addFile($file, $dirname . basename($file));
+						}
 					}
 				}
 			}
@@ -623,10 +632,16 @@ class Vqmod extends \Opencart\System\Engine\Controller {
 
 		$data['vqmods'] = [];
 
+		$dir_opencart = str_replace('\\', '/', DIR_OPENCART);
+
 		foreach ($results as $result) {
+			$dirname =  str_replace('\\', '/', $result['dirname']);
+			$dirname =  str_replace($dir_opencart, '', $dirname) . '/';
+
 			$data['vqmods'][] = [
 				'vqmod_id'    	=> $result['vqmod_id'],
 				'name'          => $result['name'],
+				'dirname'       => $dirname,
 				'basename'      => $result['basename'],
 				'filesize'		=> number_format(($result['filesize'] / 1024), 2, '.', ' ') . 'KB',
 				// 'sort_order'    => $result['sort_order'],

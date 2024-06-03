@@ -1,6 +1,7 @@
 <?php
 namespace Opencart\Admin\Model\Extension\ClickerVqmodManager\Module;
 class Vqmod extends \Opencart\System\Engine\Model {
+	public $vqmod_dirs = [];
 	public $vqmod_dir = 'vqmod';
 	public $vqmod_url = 'vqmod';
 	public $admin_folder = 'admin';
@@ -17,8 +18,8 @@ class Vqmod extends \Opencart\System\Engine\Model {
 		$this->admin_folder = trim(basename(DIR_APPLICATION), '/ ');
 
 		// Get installed VQMod dir
-		$classes = get_declared_classes();
-		if (in_array('VQMod', $classes)) {
+		// $classes = get_declared_classes();
+		if (class_exists('VQMod') /*in_array('VQMod', $classes)*/) {
 			$rc = new \ReflectionClass('VQMod');
 			$file = $rc->getFileName();
 			if ($file) {
@@ -26,6 +27,34 @@ class Vqmod extends \Opencart\System\Engine\Model {
 				$this->vqmod_dir = realpath($pathinfo['dirname']) . '/';
 			}
 		}
+
+		// Collect custom VQMod folders
+		$this->vqmod_dirs[] = $this->vqmod_dir . 'xml/';
+
+		if (is_file($this->vqmod_dir . 'pathReplaces.php') && class_exists('VQMod') && !empty(\VQMod::$addPaths)) {
+			foreach (\VQMod::$addPaths as $path) {
+				if (str_ends_with($path, '*.xml')) {
+					$path = str_replace('*.xml', '*.xml*', $path);
+				}
+
+				$files = glob($path);
+
+				if (!empty($files)) {
+					foreach ($files as $file) {
+						$pathinfo = pathinfo($file);
+						$filedir = !empty($pathinfo['dirname']) ? realpath($pathinfo['dirname']) . '/' : '';
+
+						if (!empty($filedir) && !in_array($filedir, $this->vqmod_dirs)) {
+							$this->vqmod_dirs[] = $filedir;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	public function getVQModDirs() {
+		return $this->vqmod_dirs;
 	}
 
 	public function getVQModDir() {
@@ -92,97 +121,99 @@ class Vqmod extends \Opencart\System\Engine\Model {
 	}
 
 	public function getVQMods($data = []) {
-		$files = glob($this->vqmod_dir . 'xml/*.xml*');
-
 		$vqmods = [];
 
-		if ($files) {
-			foreach ($files as $file) {
-				$file = realpath($file);
+		foreach ($this->vqmod_dirs as $vqmod_dir) {
+			$files = glob($vqmod_dir . '*.xml*');
 
-				$vqmod_id = bin2hex($file);
+			if ($files) {
+				foreach ($files as $file) {
+					$file = realpath($file);
 
-				$xml = file_get_contents($file);
+					$vqmod_id = bin2hex($file);
 
-				$xml_error = $this->validateXML($xml);
+					$xml = file_get_contents($file);
 
-				$skip = false;
+					$xml_error = $this->validateXML($xml);
 
-				if (!empty($data['filter_vqmod_id'])) {
-					if ($vqmod_id != $data['filter_vqmod_id']) {
-						$skip = true;
-					}
-				}
+					$skip = false;
 
-				if (!empty($data['filter_xml'])) {
-					if (stripos($xml, $data['filter_xml']) === false) {
-						$skip = true;
-					}
-				}
-
-				if (isset($data['filter_status']) && strlen($data['filter_status'])) {
-					if ($data['filter_status']) {
-						if (strtolower(pathinfo($file, PATHINFO_EXTENSION)) != 'xml') {
-							$skip = true;
-						}
-					} else {
-						if (strtolower(pathinfo($file, PATHINFO_EXTENSION)) == 'xml') {
+					if (!empty($data['filter_vqmod_id'])) {
+						if ($vqmod_id != $data['filter_vqmod_id']) {
 							$skip = true;
 						}
 					}
-				}
 
-				if ($skip) { // Skip 1
-					continue;
-				}
-
-				// get XML info: name, author, etc
-				$xml_info = preg_replace('/[^\x{0009}\x{000a}\x{000d}\x{0020}-\x{D7FF}\x{E000}-\x{FFFD}]+/u', ' ', $xml);
-				$xml_info = preg_replace('/<!--(.|\s)*?-->/', '', $xml_info);
-				libxml_use_internal_errors(true);
-				$xml_obj = simplexml_load_string($xml_info, 'SimpleXMLElement', LIBXML_NOCDATA+LIBXML_PARSEHUGE);
-
-				if (!empty($data['filter_name'])) {
-					if (stripos(pathinfo($file, PATHINFO_FILENAME), $data['filter_name']) === false && stripos($xml_obj->id, $data['filter_name']) === false) {
-						$skip = true;
+					if (!empty($data['filter_xml'])) {
+						if (stripos($xml, $data['filter_xml']) === false) {
+							$skip = true;
+						}
 					}
-				}
 
-				if (!empty($data['filter_author'])) {
-					if (stripos($xml_obj->author, $data['filter_author']) === false) {
-						$skip = true;
+					if (isset($data['filter_status']) && strlen($data['filter_status'])) {
+						if ($data['filter_status']) {
+							if (strtolower(pathinfo($file, PATHINFO_EXTENSION)) != 'xml') {
+								$skip = true;
+							}
+						} else {
+							if (strtolower(pathinfo($file, PATHINFO_EXTENSION)) == 'xml') {
+								$skip = true;
+							}
+						}
 					}
+
+					if ($skip) { // Skip 1
+						continue;
+					}
+
+					// get XML info: name, author, etc
+					$xml_info = preg_replace('/[^\x{0009}\x{000a}\x{000d}\x{0020}-\x{D7FF}\x{E000}-\x{FFFD}]+/u', ' ', $xml);
+					$xml_info = preg_replace('/<!--(.|\s)*?-->/', '', $xml_info);
+					libxml_use_internal_errors(true);
+					$xml_obj = simplexml_load_string($xml_info, 'SimpleXMLElement', LIBXML_NOCDATA+LIBXML_PARSEHUGE);
+
+					if (!empty($data['filter_name'])) {
+						if (stripos(pathinfo($file, PATHINFO_FILENAME), $data['filter_name']) === false && stripos($xml_obj->id, $data['filter_name']) === false) {
+							$skip = true;
+						}
+					}
+
+					if (!empty($data['filter_author'])) {
+						if (stripos($xml_obj->author, $data['filter_author']) === false) {
+							$skip = true;
+						}
+					}
+
+					if ($skip) { // Skip 2
+						continue;
+					}
+
+					$vqmod = [
+						'vqmod_id' => $vqmod_id,
+						'path' => $file,
+						'dirname' => pathinfo($file, PATHINFO_DIRNAME),
+						'basename' => pathinfo($file, PATHINFO_BASENAME),
+						'filename' => pathinfo($file, PATHINFO_FILENAME),
+						'extension' => strtolower(pathinfo($file, PATHINFO_EXTENSION)),
+						'filesize' => filesize($file),
+						'date_added' => filectime($file) ? date('Y-m-d H:i:s', filectime($file)) : '',
+						'date_modified' => filemtime($file) ? date('Y-m-d H:i:s', filemtime($file)) : '',
+						// 'sort_order' => 0,
+						'name' => isset($xml_obj->id) ? trim((string)$xml_obj->id) : pathinfo($file, PATHINFO_FILENAME),
+						'author' => !empty($xml_obj->author) ? trim((string)$xml_obj->author) : '',
+						'version' => !empty($xml_obj->version) ? trim((string)$xml_obj->version) : '',
+						'xml' => $xml,
+						'xml_obj' => $xml_obj,
+						'xml_error' => $xml_error,
+						'status' => 1
+					];
+
+					if ($vqmod['extension'] != 'xml') {
+						$vqmod['status'] = 0;
+					}
+
+					$vqmods[$vqmod_id] = $vqmod;
 				}
-
-				if ($skip) { // Skip 2
-					continue;
-				}
-
-				$vqmod = [
-					'vqmod_id' => $vqmod_id,
-					'path' => $file,
-					'dirname' => pathinfo($file, PATHINFO_DIRNAME),
-					'basename' => pathinfo($file, PATHINFO_BASENAME),
-					'filename' => pathinfo($file, PATHINFO_FILENAME),
-					'extension' => strtolower(pathinfo($file, PATHINFO_EXTENSION)),
-					'filesize' => filesize($file),
-					'date_added' => filectime($file) ? date('Y-m-d H:i:s', filectime($file)) : '',
-					'date_modified' => filemtime($file) ? date('Y-m-d H:i:s', filemtime($file)) : '',
-					// 'sort_order' => 0,
-					'name' => isset($xml_obj->id) ? trim((string)$xml_obj->id) : pathinfo($file, PATHINFO_FILENAME),
-					'author' => !empty($xml_obj->author) ? trim((string)$xml_obj->author) : '',
-					'version' => !empty($xml_obj->version) ? trim((string)$xml_obj->version) : '',
-					'xml' => $xml,
-					'xml_obj' => $xml_obj,
-					'xml_error' => $xml_error,
-					'status' => 1
-				];
-
-				if ($vqmod['extension'] != 'xml') {
-					$vqmod['status'] = 0;
-				}
-
-				$vqmods[$vqmod_id] = $vqmod;
 			}
 		}
 
