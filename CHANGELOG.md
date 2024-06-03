@@ -37,7 +37,7 @@
 - update latest OC master links `|` to `.`
 - Update VQMod 2.6.8, PHP 8.2 support
 
-- ## v.4.0.2.2 (2024-06-01)
+## v.4.0.2.2 (2024-06-01)
 - xml files can now be stored in extension directory
 - Codemirror 5.65.16
 - OC 4.0.2.3 and 4.1.0.0 support
