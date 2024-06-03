@@ -484,7 +484,7 @@ class Vqmod extends \Opencart\System\Engine\Controller {
 			foreach ($this->vqmod_dirs as $vqmod_dir) {
 				$files = glob($vqmod_dir . '*', GLOB_NOSORT);
 
-				$this->log->write($files);
+				// $this->log->write($files);
 
 				if ($files) {
 					foreach ($files as $file) {
