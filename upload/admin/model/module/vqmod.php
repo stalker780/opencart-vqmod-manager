@@ -89,6 +89,9 @@ class Vqmod extends \Opencart\System\Engine\Model {
 
 	public function editVQMod($vqmod_id, $data) {
 		$filename_old = hex2bin($vqmod_id);
+
+		$filepath = pathinfo($filename_old, PATHINFO_DIRNAME);
+
 		$filename = $data['filename'];
 
 		if (!empty($data['status'])) {
@@ -97,7 +100,7 @@ class Vqmod extends \Opencart\System\Engine\Model {
 			$filename .= '.xml_';
 		}
 
-		$filename = $this->vqmod_dir . 'xml/' . $filename;
+		$filename = $filepath . '/' . $filename;
 
 		file_put_contents($filename_old, $data['xml']);
 

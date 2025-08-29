@@ -396,6 +396,11 @@ class Vqmod extends \Opencart\System\Engine\Controller {
 	}
 
 	public function download_log() {
+		if (!$this->user->hasPermission('access', 'extension/clicker_vqmod_manager/module/vqmod')) {
+			$this->error['warning'] = $this->language->get('error_permission');
+			return false;
+		}
+
 		$files = glob($this->vqmod_dir . 'logs/*', GLOB_NOSORT);
 
 		$filename = 'logs';
@@ -427,6 +432,11 @@ class Vqmod extends \Opencart\System\Engine\Controller {
 	}
 
 	public function download_vqcache() {
+		if (!$this->user->hasPermission('access', 'extension/clicker_vqmod_manager/module/vqmod')) {
+			$this->error['warning'] = $this->language->get('error_permission');
+			return false;
+		}
+
 		$files = glob($this->vqmod_dir . 'vqcache/*', GLOB_NOSORT);
 
 		$filename = 'vqcache';
@@ -458,6 +468,11 @@ class Vqmod extends \Opencart\System\Engine\Controller {
 	}
 
 	public function download_xml() {
+		if (!$this->user->hasPermission('access', 'extension/clicker_vqmod_manager/module/vqmod')) {
+			$this->error['warning'] = $this->language->get('error_permission');
+			return false;
+		}
+
 		if (isset($this->request->get['vqmod_id'])) {
 			$file = hex2bin($this->request->get['vqmod_id']);
 
@@ -647,8 +662,7 @@ class Vqmod extends \Opencart\System\Engine\Controller {
 				// 'sort_order'    => $result['sort_order'],
 				'date_added'    => strpos($result['date_added'], '0000-00-00') === false ? date('Y-m-d H:i:s', strtotime($result['date_added'])) : '',
 				'date_modified' => strpos($result['date_modified'], '0000-00-00') === false ? date('Y-m-d H:i:s', strtotime($result['date_modified'])) : '',
-				'status'        => (int)$result['status'] ? $this->language->get('text_enabled') : $this->language->get('text_disabled'),
-				'enabled'       => (int)$result['status'],
+				'status'        => (int)$result['status'],
 				'edit'          => $this->url->link('extension/clicker_vqmod_manager/module/vqmod.edit', 'user_token=' . $this->session->data['user_token'] . '&vqmod_id=' . $result['vqmod_id'] . $url, true),
 				'delete'        => $this->url->link('extension/clicker_vqmod_manager/module/vqmod.delete', 'user_token=' . $this->session->data['user_token'] . '&vqmod_id=' . $result['vqmod_id'] . $url, true),
 				'enable'        => $this->url->link('extension/clicker_vqmod_manager/module/vqmod.enable', 'user_token=' . $this->session->data['user_token'] . '&vqmod_id=' . $result['vqmod_id'] . $url, true),

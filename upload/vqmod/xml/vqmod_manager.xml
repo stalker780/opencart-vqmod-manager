@@ -45,4 +45,16 @@
 		</operation>
 	</file>
 
+	<file name="admin/controller/common/developer.php">
+		<operation>
+			<search position="before" trim="true"><![CDATA[
+				$json['success'] = $this->language->get('text_cache_success')
+			]]></search>
+			<add trim="true"><![CDATA[
+				$this->load->model('extension/clicker_vqmod_manager/module/vqmod');
+				$this->model_extension_clicker_vqmod_manager_module_vqmod->clearCache();
+			]]></add>
+		</operation>
+	</file>
+
 </modification>
